@@ -31,6 +31,7 @@ categorySchema.statics.AddCategory = function(categoryDetail,done) {
 };
 
 categorySchema.statics.deleteCategory = function(catId, callback) {
+	console.log(catId);
 	mongoose.model('Categories', categorySchema);
 	var Categories = conn.model('Categories');
 	Categories.findOne({_id : catId}, function(err, cat){
@@ -47,7 +48,6 @@ categorySchema.statics.updateCategory = function(categoryDetail,done) {
 	Categories.findOne({_id : categoryDetail['catId']}, function(err, cat){
 		if(err)
 			console.log("error :- "+err);
-		console.log(cat);
 		cat.categoryName = categoryDetail['catName'];
 		return cat.save(done);
 	});

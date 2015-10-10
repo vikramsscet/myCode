@@ -10,12 +10,11 @@ var MongoClient = mongodb.MongoClient;
 // Connection URL. This is where your mongodb server is running.
 var url = 'mongodb://localhost:27017/assistDB';
 
-var cats;
+var categ;
 Category.findAllCategories(function(error, cats) {
-	cats = cats;
-	console.log(cats);
+	categ = cats;
+	console.log(categ);
 });
-console.log(cats);
 
 /* GET home page. */
 app.get('/', function(req, res)
@@ -26,19 +25,27 @@ app.get('/', function(req, res)
 		uName = req.session.loggedInUserName;
 	}
 	var cats;
-	console.log(req.session.categories);
-	if(req.session.categories == null || req.session.categories == undefined){
+	console.log(categ);
+	/*if(req.session.categories == null || req.session.categories == undefined){
 		console.log("--------------------");
 		Category.findAllCategories(function(error, cats) {
 			cats = cats;
+			req.session.categories = cats;
+			console.log(cats);
+			res.render('index', {
+				title : 'New Idea...',
+				userName : uName,
+				cats : cats,
+				error : ""
+			});
 		});
-	}
-	req.session.categories = cats;
-	console.log(cats);
+	}*/
+	//req.session.categories = categ;
+	//console.log(categ);
 	res.render('index', {
 		title : 'New Idea...',
 		userName : uName,
-		cats : cats,
+		cats : categ,
 		error : ""
 	});
 });
@@ -53,13 +60,13 @@ app.post('/signUp', function(req, res, next)
 		password : req.body.newpwd
 	};
 	
-	var cats;
+	/*var cats;
 	if(req.session.categories === null){
 		Category.findAllCategories(function(error, cats) {
 			req.session.categories = cats;
 		});
 	}
-	cats = req.session.categories;
+	cats = req.session.categories;*/
 	
 	User.findUser(regData.email, function(error, user){
 		if(user===null){
@@ -75,7 +82,7 @@ app.post('/signUp', function(req, res, next)
 			res.render('index', {
 				title : 'New Idea...',
 				userName : "",
-				cats : cats,
+				cats : categ,
 				error : {
 					errorType : "signup",
 					message : "Email already exists..."
@@ -91,19 +98,19 @@ app.post('/signIn', function(req, res)
 		email : req.body.email,
 		password : req.body.pwd
 	};
-	var cats;
+	/*var cats;
 	if(req.session.categories === null){
 		Category.findAllCategories(function(error, cats) {
 			req.session.categories = cats;
 		});
 	}
-	cats = req.session.categories;
+	cats = req.session.categories;*/
 	User.findUser(loginDetail.email, function(error, user){
 		if(user === null){
 			res.render('index', {
 				title : 'New Idea...',
 				userName : "",
-				cats : cats,
+				cats : categ,
 				error : {
 					errorType : "login",
 					message : "Please enter valid login credentials."
@@ -114,7 +121,7 @@ app.post('/signIn', function(req, res)
 				res.render('index', {
 					title : 'New Idea...',
 					userName : "",
-					cats : cats,  
+					cats : categ,  
 					error : {
 						errorType : "login",
 						message : "Please enter valid login credentials."
@@ -140,18 +147,18 @@ app.get('/list', function(req, res){
 	{
 		uName = req.session.loggedInUserName;
 	}
-	var cats;
+	/*var cats;
 	if(req.session.categories === null){
 		Category.findAllCategories(function(error, cats) {
 			req.session.categories = cats;
 		});
 	}
-	cats = req.session.categories;
+	cats = req.session.categories;*/
 	User.findAllUsers(function(error, users) {
 		res.render('users', {
 			title : 'New Idea...',
 			userName : uName,
-			cats : cats,
+			cats : categ,
 			users : users,
 			error : ""
 		});
@@ -184,16 +191,16 @@ app.get('/admin', function(req, res){
 	{
 		uName = req.session.loggedInUserName;
 	}
-	var cats;
+	/*var cats;
 	if(req.session.categories === null){
 		Category.findAllCategories(function(error, cats) {
 			req.session.categories = cats;
 		});
 	}
-	cats = req.session.categories;
+	cats = req.session.categories;*/
 	res.render('admin', {
 		title : 'New Idea...',
-		cats : cats,
+		cats : categ,
 		userName : uName,
 		error : ""
 	});
@@ -204,17 +211,17 @@ app.get('/category', function(req, res){
 	{
 		uName = req.session.loggedInUserName;
 	}
-	var cats;
+	/*var cats;
 	if(req.session.categories === null){
 		Category.findAllCategories(function(error, cats) {
 			req.session.categories = cats;
 		});
 	}
-	cats = req.session.categories;
+	cats = req.session.categories;*/
 	res.render('category', {
 		title : 'New Idea...',
 		userName : uName,
-		cats : cats,
+		cats : categ,
 		error : ""
 	});
 });
@@ -231,7 +238,10 @@ app.post('/addCategory', function(req, res, next)
 						if(error){
 							console.log("40...."+error);
 						}
-						res.json(cats);
+						console.log(cats);
+						
+						categ[categ.length] = cats;
+						res.json(categ);
 					});
 				}
 				else{
@@ -243,7 +253,12 @@ app.post('/addCategory', function(req, res, next)
 app.get('/deleteCategory',function(req,res){
 	var catId = req.param('id');
 	Category.deleteCategory(catId, function(error, category) {
-		res.json(category);
+		for(var i=0; i<categ.length; i++){
+			if(categ[i]['categoryName'] == category['categoryName']){
+				categ.splice(i,1);
+			}
+		}
+		res.json(categ);
 	});
 });
 
@@ -256,7 +271,12 @@ app.get('/findCategoryById',function(req,res){
 
 app.post('/updateCategoryById',function(req,res){
 	Category.updateCategory(req.body, function(error, cat) {
-		res.json(cat);
+		for(var i=0; i<categ.length; i++){
+			if(categ[i]['_id']+'' === cat['_id']+''){
+				categ[i] = cat;
+			}
+		}
+		res.json(categ);
 	});
 });
 
