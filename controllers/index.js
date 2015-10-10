@@ -1,14 +1,7 @@
 var express = require('express');
 var app = express.Router();
-var mongodb = require('mongodb');
-var mongoose = require('mongoose');
-var NodeCache = require( "node-cache" );
 var User = require('../models/User');
 var Category = require('../models/Category');
-
-var MongoClient = mongodb.MongoClient;
-
-var url = 'mongodb://localhost:27017/assistDB';
 
 var categ;
 Category.findAllCategories(function(error, cats) {
@@ -23,16 +16,19 @@ app.get('/', function(req, res)
 	{
 		uName = req.session.loggedInUserName;
 	}
-	var cats;
+	if(req.session.categories == null || req.session.categories == undefined){
+		req.session.categories = categ;
+	}
+	var cats = req.session.categories;
 	res.render('index', {
 		title : 'New Idea...',
 		userName : uName,
-		cats : categ,
+		cats : cats,
 		error : ""
 	});
 });
 
-app.post('/signUp', function(req, res, next)
+app.post('/signUp', function(req, res)
 {
 	var regData = {
 		firstName : req.body.firstName,
@@ -41,7 +37,10 @@ app.post('/signUp', function(req, res, next)
 		email : req.body.newemail,
 		password : req.body.newpwd
 	};
-	
+	if(req.session.categories == null || req.session.categories == undefined){
+		req.session.categories = categ;
+	}
+	var cats = req.session.categories;
 	User.findUser(regData.email, function(error, user){
 		if(user===null){
 			User.AddUser(regData,function(error, users) {
@@ -56,7 +55,7 @@ app.post('/signUp', function(req, res, next)
 			res.render('index', {
 				title : 'New Idea...',
 				userName : "",
-				cats : categ,
+				cats : cats,
 				error : {
 					errorType : "signup",
 					message : "Email already exists..."
@@ -72,13 +71,16 @@ app.post('/signIn', function(req, res)
 		email : req.body.email,
 		password : req.body.pwd
 	};
-	
+	if(req.session.categories == null || req.session.categories == undefined){
+		req.session.categories = categ;
+	}
+	var cats = req.session.categories;
 	User.findUser(loginDetail.email, function(error, user){
 		if(user === null){
 			res.render('index', {
 				title : 'New Idea...',
 				userName : "",
-				cats : categ,
+				cats : cats,
 				error : {
 					errorType : "login",
 					message : "Please enter valid login credentials."
@@ -89,7 +91,7 @@ app.post('/signIn', function(req, res)
 				res.render('index', {
 					title : 'New Idea...',
 					userName : "",
-					cats : categ,  
+					cats : cats,  
 					error : {
 						errorType : "login",
 						message : "Please enter valid login credentials."
@@ -115,12 +117,15 @@ app.get('/list', function(req, res){
 	{
 		uName = req.session.loggedInUserName;
 	}
-	
+	if(req.session.categories == null || req.session.categories == undefined){
+		req.session.categories = categ;
+	}
+	var cats = req.session.categories;
 	User.findAllUsers(function(error, users) {
 		res.render('users', {
 			title : 'New Idea...',
 			userName : uName,
-			cats : categ,
+			cats : cats,
 			users : users,
 			error : ""
 		});
@@ -153,78 +158,15 @@ app.get('/admin', function(req, res){
 	{
 		uName = req.session.loggedInUserName;
 	}
+	if(req.session.categories == null || req.session.categories == undefined){
+		req.session.categories = categ;
+	}
+	var cats = req.session.categories;
 	res.render('admin', {
 		title : 'New Idea...',
-		cats : categ,
+		cats : cats,
 		userName : uName,
 		error : ""
-	});
-});
-app.get('/category', function(req, res){
-	var uName = "";
-	if (req.session.loggedInUserName !== null && req.session.loggedInUserName !== undefined)
-	{
-		uName = req.session.loggedInUserName;
-	}
-	res.render('category', {
-		title : 'New Idea...',
-		userName : uName,
-		cats : categ,
-		error : ""
-	});
-});
-
-app.post('/addCategory', function(req, res, next)
-		{
-			var catData = {
-				categoryName : req.body.category
-			};
-			Category.findCategory(catData.categoryName, function(error, category){
-				console.log(category);
-				if(category===null){
-					Category.AddCategory(catData,function(error, cats) {
-						if(error){
-							console.log("40...."+error);
-						}
-						console.log(cats);
-						
-						categ[categ.length] = cats;
-						res.json(categ);
-					});
-				}
-				else{
-					res.json({error : "Category already exists."});
-				}
-			});
-});
-
-app.get('/deleteCategory',function(req,res){
-	var catId = req.param('id');
-	Category.deleteCategory(catId, function(error, category) {
-		for(var i=0; i<categ.length; i++){
-			if(categ[i]['categoryName'] == category['categoryName']){
-				categ.splice(i,1);
-			}
-		}
-		res.json(categ);
-	});
-});
-
-app.get('/findCategoryById',function(req,res){
-	var catId = req.param('id');
-	Category.findCategoryById(catId, function(error, cat) {
-		res.json(cat);
-	});
-});
-
-app.post('/updateCategoryById',function(req,res){
-	Category.updateCategory(req.body, function(error, cat) {
-		for(var i=0; i<categ.length; i++){
-			if(categ[i]['_id']+'' === cat['_id']+''){
-				categ[i] = cat;
-			}
-		}
-		res.json(categ);
 	});
 });
 
