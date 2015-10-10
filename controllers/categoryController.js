@@ -83,4 +83,22 @@ app.post('/updateCategoryById',function(req,res){
 	});
 });
 
+app.get('/sub-category', function(req, res){
+	var uName = "";
+	if (req.session.loggedInUserName !== null && req.session.loggedInUserName !== undefined)
+	{
+		uName = req.session.loggedInUserName;
+	}
+	if(req.session.categories == null || req.session.categories == undefined){
+		req.session.categories = categ;
+	}
+	var cats = req.session.categories;
+	res.render('subcategory', {
+		title : 'New Idea...',
+		userName : uName,
+		cats : cats,
+		error : ""
+	});
+});
+
 module.exports = app;
