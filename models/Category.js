@@ -31,7 +31,6 @@ categorySchema.statics.AddCategory = function(categoryDetail,done) {
 };
 
 categorySchema.statics.deleteCategory = function(catId, callback) {
-	console.log(catId);
 	mongoose.model('Categories', categorySchema);
 	var Categories = conn.model('Categories');
 	Categories.findOne({_id : catId}, function(err, cat){

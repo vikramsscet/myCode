@@ -7,7 +7,7 @@ var User = require('../models/User');
 var Category = require('../models/Category');
 
 var MongoClient = mongodb.MongoClient;
-// Connection URL. This is where your mongodb server is running.
+
 var url = 'mongodb://localhost:27017/assistDB';
 
 var categ;
@@ -16,7 +16,6 @@ Category.findAllCategories(function(error, cats) {
 	console.log(categ);
 });
 
-/* GET home page. */
 app.get('/', function(req, res)
 {
 	var uName = "";
@@ -25,23 +24,6 @@ app.get('/', function(req, res)
 		uName = req.session.loggedInUserName;
 	}
 	var cats;
-	console.log(categ);
-	/*if(req.session.categories == null || req.session.categories == undefined){
-		console.log("--------------------");
-		Category.findAllCategories(function(error, cats) {
-			cats = cats;
-			req.session.categories = cats;
-			console.log(cats);
-			res.render('index', {
-				title : 'New Idea...',
-				userName : uName,
-				cats : cats,
-				error : ""
-			});
-		});
-	}*/
-	//req.session.categories = categ;
-	//console.log(categ);
 	res.render('index', {
 		title : 'New Idea...',
 		userName : uName,
@@ -59,14 +41,6 @@ app.post('/signUp', function(req, res, next)
 		email : req.body.newemail,
 		password : req.body.newpwd
 	};
-	
-	/*var cats;
-	if(req.session.categories === null){
-		Category.findAllCategories(function(error, cats) {
-			req.session.categories = cats;
-		});
-	}
-	cats = req.session.categories;*/
 	
 	User.findUser(regData.email, function(error, user){
 		if(user===null){
@@ -98,13 +72,7 @@ app.post('/signIn', function(req, res)
 		email : req.body.email,
 		password : req.body.pwd
 	};
-	/*var cats;
-	if(req.session.categories === null){
-		Category.findAllCategories(function(error, cats) {
-			req.session.categories = cats;
-		});
-	}
-	cats = req.session.categories;*/
+	
 	User.findUser(loginDetail.email, function(error, user){
 		if(user === null){
 			res.render('index', {
@@ -147,13 +115,7 @@ app.get('/list', function(req, res){
 	{
 		uName = req.session.loggedInUserName;
 	}
-	/*var cats;
-	if(req.session.categories === null){
-		Category.findAllCategories(function(error, cats) {
-			req.session.categories = cats;
-		});
-	}
-	cats = req.session.categories;*/
+	
 	User.findAllUsers(function(error, users) {
 		res.render('users', {
 			title : 'New Idea...',
@@ -191,13 +153,6 @@ app.get('/admin', function(req, res){
 	{
 		uName = req.session.loggedInUserName;
 	}
-	/*var cats;
-	if(req.session.categories === null){
-		Category.findAllCategories(function(error, cats) {
-			req.session.categories = cats;
-		});
-	}
-	cats = req.session.categories;*/
 	res.render('admin', {
 		title : 'New Idea...',
 		cats : categ,
@@ -211,13 +166,6 @@ app.get('/category', function(req, res){
 	{
 		uName = req.session.loggedInUserName;
 	}
-	/*var cats;
-	if(req.session.categories === null){
-		Category.findAllCategories(function(error, cats) {
-			req.session.categories = cats;
-		});
-	}
-	cats = req.session.categories;*/
 	res.render('category', {
 		title : 'New Idea...',
 		userName : uName,

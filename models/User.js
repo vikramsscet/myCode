@@ -9,9 +9,6 @@ var userSchema = new Schema({
     password : String
 });
 
-/*mongoose.model('Users', userSchema);
-var Users = conn.model('Users');*/
-
 userSchema.statics.findUser = function(email, done) {
 	mongoose.model('Users', userSchema);
 	var Users = conn.model('Users');
@@ -45,7 +42,7 @@ userSchema.statics.updateUser = function(userDetail,done) {
 	Users.findOne({_id : userDetail['userId']}, function(err, user){
 		if(err)
 			console.log("error :- "+err);
-		console.log(user);
+		
 		user.firstName = userDetail['fName'];
 		user.lastName = userDetail['lName'];
 		user.email = userDetail['email'];
@@ -61,7 +58,6 @@ userSchema.statics.deleteUser = function(userId, callback) {
 	Users.findOne({_id : userId}, function(err, user){
 		if(err)
 			console.log("error :- "+err);
-		console.log(user);
 		
 		return user.remove(callback);
 	});
