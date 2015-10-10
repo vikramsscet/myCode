@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<% include ./partials/head %>
+  </head>
+  <body class="container" data-spy="scroll" data-target=".navbar" data-offset="50">
+  	<header>
+		<% include ./partials/header %>
+	</header>
+    
+	<h2>In Category Page</h2>
+	<button type="button" id="addCategory" class="btn btn-primary">Add Category</button>
+	
+	<table class="table table-hover table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Edit/Delete Category</th>
+      </tr>
+    </thead>
+    <tbody>
+    	<% for(var i=0; i<cats.length; i++) {%>
+    		<tr>
+    			<td> <%= cats[i].categoryName %> </td>
+        		<td> 
+        			<div class="btn-group"> 
+        				<button type="button" id="editCategory-<%= cats[i]['_id'] %>" class="btn btn-primary">Edit</button> 
+        				<button type="button" id="deleteCategory-<%= cats[i]['_id'] %>" class="btn btn-primary">Delete</button> 
+        			</div> 
+        		</td>
+    		</tr>
+    	<% } %>
+    </tbody>
+  	</table>
+	
+	
+<footer>
+	<% include ./partials/footer %>
+</footer>
+    
+</body>
+</html>
+	
+
+<div id="addCategoryDialog" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button id="addCategoryCloseButton" type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Add Category</h4>
+      </div>
+      <div class="modal-body">
+        			<div class="form-group">
+				      <label for="eu-category">Category <p id="catWarning" style="display:none" class="text-warning"></p></label>
+				      <input type="text" class="form-control" id="eu-category" name="eu-category">
+				    </div>
+      </div>
+      <div class="modal-footer">
+      	<button id="addCategorySubmitButton" type="button" class="btn btn-primary">Add Category</button>
+        <button id="addCategoryCancleButton" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<div id="editCategoryModalDialog" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button id="addCategoryCloseButton" type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit Category</h4>
+      </div>
+      <div class="modal-body">
+        			<div class="form-group">
+				      <label for="eu-edit-category">Category <p id="editCatWarning" style="display:none" class="text-warning"></p></label>
+				      <input type="text" class="form-control" id="eu-edit-category" name="eu-edit-category">
+				    </div>
+      </div>
+      <div class="modal-footer">
+      	<button id="editCategorySubmitButton" type="button" class="btn btn-primary">Edit Category</button>
+        <button id="editCategoryCancleButton" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
