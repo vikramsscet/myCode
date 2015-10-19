@@ -14,12 +14,30 @@
 		<div class="collapse navbar-collapse" id="myNavbar">
 			<ul class="nav navbar-nav">
 		          <li><a href="/admin">Admin</a></li>
-		          <% for(var i=0; i<cats.length; i++) {%>
-		          
-		          <li><a href="/article?data=<%= cats[i].categoryName %>"> <%= cats[i].categoryName %> </a></li>
-		          
-		          <% } %>
-		          
+					<% var cat = {}; %>
+					<% for(var i=0; i<cats.length; i++) { %>
+						<% var sclist = []; %>
+						<% for(var subCatIterator = 0; subCatIterator < subcats.length; subCatIterator++){%>
+							<% if(cats[i].categoryName == subcats[subCatIterator].categoryName){
+								sclist.push(subcats[subCatIterator].subCategoryName);
+							} %>
+						<% }
+							cat[cats[i].categoryName] = sclist;
+						%>
+					<% } %>
+				    <% for(var index in cat){%>
+						<% if(cat[index].length > 0){%>
+							<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="/article?data=<%= index %>"> <%= index %> </a>
+								<ul class="dropdown-menu">
+							<% for(var i = 0; i<cat[index].length; i++){%>
+									<li><a href="/article?data=<%= cat[index][i]%>"><%= cat[index][i] %></a></li>
+							<%}%>
+								</ul>
+							</li>
+						<% } else {%>
+							<li><a href="/article?data=<%= index %>"> <%= index %> </a></li>
+						<% } %>
+					<% } %>
 		          <!-- <li><a href="#section3">Section 3</a></li>
 		          <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Section 4 <span class="caret"></span></a>
 		            <ul class="dropdown-menu">

@@ -20,14 +20,14 @@
       </tr>
     </thead>
     <tbody>
-    	<% for(var i=0; i<subCats.length; i++) {%>
+    	<% for(var i=0; i<subcats.length; i++) {%>
     		<tr>
-    			<td> <%= subCats[i].subCategoryName %> </td>
-    			<td> <%= subCats[i].categoryName %> </td>
+    			<td> <%= subcats[i].subCategoryName %> </td>
+    			<td> <%= subcats[i].categoryName %> </td>
     	        		<td> 
     	        			<div class="btn-group"> 
-    	        				<button type="button" id="editSubCategory-<%= subCats[i]['_id'] %>" class="btn btn-primary">Edit</button> 
-    	        				<button type="button" id="deleteSubCategory-<%= subCats[i]['_id'] %>" class="btn btn-primary">Delete</button> 
+    	        				<button type="button" id="editSubCategory-<%= subcats[i]['_id'] %>" class="btn btn-primary">Edit</button>
+    	        				<button type="button" id="deleteSubCategory-<%= subcats[i]['_id'] %>" class="btn btn-primary">Delete</button>
     	        			</div> 
     	        		</td>
     		</tr>

@@ -2,13 +2,15 @@ var express = require('express');
 var app = express.Router();
 var User = require('../models/User');
 var Category = require('../models/Category');
-
+var SubCategory = require('../models/SubCategory');
 var categ;
 Category.findAllCategories(function(error, cats) {
 	categ = cats;
-	console.log(categ);
 });
-
+var subCateg;
+SubCategory.findAllSubCategories(function(error, subCats){
+	subCateg = subCats;
+});
 app.get('/', function(req, res)
 {
 	var uName = "";
@@ -20,10 +22,16 @@ app.get('/', function(req, res)
 		req.session.categories = categ;
 	}
 	var cats = req.session.categories;
+	if(req.session.subcategories == null || req.session.subcategories == undefined){
+		req.session.subcategories = subCateg;
+	}
+	var subcats = req.session.subcategories;
+	console.log(subcats);
 	res.render('index', {
 		title : 'New Idea...',
 		userName : uName,
 		cats : cats,
+		subcats : subcats,
 		error : ""
 	});
 });
@@ -75,12 +83,17 @@ app.post('/signIn', function(req, res)
 		req.session.categories = categ;
 	}
 	var cats = req.session.categories;
+	if(req.session.subcategories == null || req.session.subcategories == undefined){
+		req.session.subcategories = subCateg;
+	}
+	var subcats = req.session.subcategories;
 	User.findUser(loginDetail.email, function(error, user){
 		if(user === null){
 			res.render('index', {
 				title : 'New Idea...',
 				userName : "",
 				cats : cats,
+				subcats : subcats,
 				error : {
 					errorType : "login",
 					message : "Please enter valid login credentials."
@@ -91,7 +104,8 @@ app.post('/signIn', function(req, res)
 				res.render('index', {
 					title : 'New Idea...',
 					userName : "",
-					cats : cats,  
+					cats : cats,
+					subcats : subcats,
 					error : {
 						errorType : "login",
 						message : "Please enter valid login credentials."
@@ -121,11 +135,16 @@ app.get('/list', function(req, res){
 		req.session.categories = categ;
 	}
 	var cats = req.session.categories;
+	if(req.session.subcategories == null || req.session.subcategories == undefined){
+		req.session.subcategories = subCateg;
+	}
+	var subcats = req.session.subcategories;
 	User.findAllUsers(function(error, users) {
 		res.render('users', {
 			title : 'New Idea...',
 			userName : uName,
 			cats : cats,
+			subcats : subcats,
 			users : users,
 			error : ""
 		});
@@ -162,9 +181,14 @@ app.get('/admin', function(req, res){
 		req.session.categories = categ;
 	}
 	var cats = req.session.categories;
+	if(req.session.subcategories == null || req.session.subcategories == undefined){
+		req.session.subcategories = subCateg;
+	}
+	var subcats = req.session.subcategories;
 	res.render('admin', {
 		title : 'New Idea...',
 		cats : cats,
+		subcats : subcats,
 		userName : uName,
 		error : ""
 	});

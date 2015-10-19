@@ -21,11 +21,16 @@ app.get('/category', function(req, res){
 	if(req.session.categories == null || req.session.categories == undefined){
 		req.session.categories = categ;
 	}
+	if(req.session.subcategories == null || req.session.subcategories == undefined){
+		req.session.subcategories = subCateg;
+	}
 	var cats = req.session.categories;
+	var subcats = req.session.subcategories;
 	res.render('category', {
 		title : 'New Idea...',
 		userName : uName,
 		cats : cats,
+		subcats : subcats,
 		error : ""
 	});
 });
@@ -98,11 +103,15 @@ app.get('/sub-category', function(req, res){
 		req.session.categories = categ;
 	}
 	var cats = req.session.categories;
+	if(req.session.subcategories == null || req.session.subcategories == undefined){
+		req.session.subcategories = subCateg;
+	}
+	var subcats = req.session.subcategories;
 	res.render('subcategory', {
 		title : 'New Idea...',
 		userName : uName,
 		cats : cats,
-		subCats : subCateg,
+		subcats : subcats,
 		error : ""
 	});
 });
