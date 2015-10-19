@@ -20,17 +20,18 @@
       </tr>
     </thead>
     <tbody>
-    	<!-- <% for(var i=0; i<cats.length; i++) {%>
+    	<% for(var i=0; i<subCats.length; i++) {%>
     		<tr>
-    			<td> <%= cats[i].categoryName %> </td>
+    			<td> <%= subCats[i].subCategoryName %> </td>
+    			<td> <%= subCats[i].categoryName %> </td>
     	        		<td> 
     	        			<div class="btn-group"> 
-    	        				<button type="button" id="editCategory-<%= cats[i]['_id'] %>" class="btn btn-primary">Edit</button> 
-    	        				<button type="button" id="deleteCategory-<%= cats[i]['_id'] %>" class="btn btn-primary">Delete</button> 
+    	        				<button type="button" id="editSubCategory-<%= subCats[i]['_id'] %>" class="btn btn-primary">Edit</button> 
+    	        				<button type="button" id="deleteSubCategory-<%= subCats[i]['_id'] %>" class="btn btn-primary">Delete</button> 
     	        			</div> 
     	        		</td>
     		</tr>
-    	<% } %> -->
+    	<% } %>
     </tbody>
   	</table>
 	
@@ -51,11 +52,16 @@
       <div class="modal-header">
         <button id="addSubCategoryCloseButton" type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Add Sub-Category</h4>
+        <p id="subCatWarning" style="display:none" class="text-warning"></p>
       </div>
       <div class="modal-body">
         			<div class="form-group">
-				      <label for="eu-sub-category">Category <p id="subCatWarning" style="display:none" class="text-warning"></p></label>
-				      <input type="text" class="form-control" id="eu-sub-category" name="eu-sub-category">
+						<label for="selectCategory">Select Category:</label>
+      					<select class="form-control" id="selectCategory">
+						</select>
+						
+				      	<label for="eu-sub-category">Sub-Category Name:</label>
+				      	<input type="text" class="form-control" id="eu-sub-category" name="eu-sub-category">
 				    </div>
       </div>
       <div class="modal-footer">

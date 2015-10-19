@@ -1,15 +1,17 @@
 var express = require('express');
 var app = express.Router();
 
-var User = require('../models/User');
+//var User = require('../models/User');
 var Category = require('../models/Category');
-
+var SubCategory = require('../models/SubCategory');
 var categ;
 Category.findAllCategories(function(error, cats) {
 	categ = cats;
-	console.log(categ);
 });
-
+var subCateg;
+SubCategory.findAllSubCategories(function(error, subCats){
+	subCateg = subCats;
+});
 app.get('/category', function(req, res){
 	var uName = "";
 	if (req.session.loggedInUserName !== null && req.session.loggedInUserName !== undefined)
@@ -28,13 +30,16 @@ app.get('/category', function(req, res){
 	});
 });
 
+app.get('/categoryList',function(req,res){
+	res.json(categ);
+});
+
 app.post('/addCategory', function(req, res, next)
 		{
 			var catData = {
 				categoryName : req.body.category
 			};
 			Category.findCategory(catData.categoryName, function(error, category){
-				console.log(category);
 				if(category===null){
 					Category.AddCategory(catData,function(error, cats) {
 						if(error){
@@ -97,8 +102,34 @@ app.get('/sub-category', function(req, res){
 		title : 'New Idea...',
 		userName : uName,
 		cats : cats,
+		subCats : subCateg,
 		error : ""
 	});
+});
+
+app.post('/addSubCategory', function(req, res)
+		{
+			var subCatData = {
+				categoryName : req.body.category,
+				subCategoryName : req.body.subCategory
+			};
+			console.log(subCatData);
+			SubCategory.findSubCategory(subCatData.subCategoryName, function(error, category){
+				console.log(category);
+				if(category===null){
+					SubCategory.addSubCategory(subCatData,function(error, subCats) {
+						if(error){
+							console.log("40...."+error);
+						}	
+						subCateg[subCateg.length] = subCats;
+						/*req.session.categories = categ;*/
+						res.json(subCateg);
+					});
+				}
+				else{
+					res.json({error : "Sub-Category already exists."});
+				}
+			});
 });
 
 module.exports = app;
