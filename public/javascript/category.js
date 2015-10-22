@@ -11,6 +11,10 @@ var Category = {
 			this.addSubCategoryButtonClick();
 			this.closeCancleSubCategoryButtonClick();
 			this.addSubCategorySubmitClick();
+			this.deleteSubCategoryButtonClick();
+			this.editSubCategoryButtonClick();
+			this.editSubCategorySubmitClick();
+			this.editSubCategoryCloseCancleClick();
 		},
 		
 		addCategoryButtonClick : function(){
@@ -42,7 +46,6 @@ var Category = {
 						dataType : "json",
 						data : addCategoryData,
 						success: function(result){
-							console.log(result);
 							if(result.hasOwnProperty('error')){
 								$("#catWarning").show().html(result['error']);
 							}else{
@@ -57,7 +60,7 @@ var Category = {
 		
 		deleteCategoryButtonClick : function(){
 			$("[id^='deleteCategory-']").click(function(element){
-				var catId = this.id.split('-')[1]; 
+				var catId = this.id.split('-')[1];
 				$.ajax({
 					url: "/deleteCategory",
 					type: "GET",
@@ -81,7 +84,6 @@ var Category = {
 					dataType : "json",
 					data : {id : categoryId},
 					success: function(result){
-						console.log(result);
 						$("#eu-edit-category").val(result.categoryName);
 						$("#editCategorySubmitButton").val(categoryId);
 					}
@@ -176,7 +178,6 @@ var Category = {
 						dataType : "json",
 						data : addSubCategoryData,
 						success: function(result){
-							console.log(result);
 							if(result.hasOwnProperty('error')){
 								$("#subCatWarning").show().html(result['error']);
 							}else{
@@ -187,5 +188,84 @@ var Category = {
 					});
 				}
 			});
-		}
+		},
+
+	deleteSubCategoryButtonClick : function(){
+		$("[id^='deleteSubCategory-']").click(function(element){
+			var subCatId = this.id.split('-')[1];
+			$.ajax({
+				url: "/deleteSubCategory",
+				type: "GET",
+				async: false,
+				dataType : "json",
+				data : {id : subCatId},
+				success: function(result){
+					window.location = window.location.href;
+				}
+			});
+		});
+	},
+
+	editSubCategoryButtonClick : function(){
+		$("[id^='editSubCategory-']").click(function(element){
+
+			$("#editSubCatWarning").hide();
+			var getCatListfun = Category.getCategoryList();
+			$("#editSelectCategory").empty();
+			var categoryList = getCatListfun();
+			$("#editSelectCategory").append("<option value=''>Select Category</option>");
+			for(var i=0; i< categoryList.length; i++){
+				$("#editSelectCategory").append("<option value='"+categoryList[i]['categoryName']+"'>"+categoryList[i]['categoryName']+"</option>");
+			}
+
+			var subCategoryId = this.id.split('-')[1];
+			$.ajax({
+				url: "/findSubCategoryById",
+				type: "GET",
+				async: false,
+				dataType : "json",
+				data : {id : subCategoryId},
+				success: function(result){
+					$("#editSelectCategory option[value='"+result.categoryName+"']").prop('selected', true);
+					$("#eu-edit-sub-category").val(result.subCategoryName);
+					$("#editSubCategorySubmitButton").val(subCategoryId);
+				}
+			});
+			$("#editSubCategoryModalDialog").removeClass("fade").addClass("show");
+		});
+	},
+
+	editSubCategoryCloseCancleClick : function(){
+		$("#editSubCategoryCloseButton, #editSubCategoryCancleButton").click(function(){
+			$("#editSubCatWarning").hide();
+			$("#editSubCategoryModalDialog").removeClass("show").addClass("fade");
+		});
+	},
+
+	editSubCategorySubmitClick : function(){
+		$("#editSubCategorySubmitButton").click(function(){
+			var catName = $("#editSelectCategory").val();
+			var subCatName = $("#eu-edit-sub-category").val();
+			if(subCatName == "" || subCatName == null || catName == "" || catName == null){
+				$("#editCatWarning").show().html("Please enter Category & SubCateory to update.");
+			}else{
+				var subCatDetail = {
+					catName : catName,
+					subCatName : subCatName,
+					subCatId : $("#editSubCategorySubmitButton").val()
+				};
+				$.ajax({
+					url: "/updateSubCategoryById",
+					type: "POST",
+					async: false,
+					dataType : "json",
+					data : subCatDetail,
+					success: function(result){
+						$("#editSubCategoryModalDialog").removeClass("show").addClass("fade");
+						window.location = window.location.href;
+					}
+				});
+			}
+		});
+	}
 }

@@ -122,16 +122,14 @@ app.post('/addSubCategory', function(req, res)
 				categoryName : req.body.category,
 				subCategoryName : req.body.subCategory
 			};
-			console.log(subCatData);
 			SubCategory.findSubCategory(subCatData.subCategoryName, function(error, category){
-				console.log(category);
 				if(category===null){
 					SubCategory.addSubCategory(subCatData,function(error, subCats) {
 						if(error){
 							console.log("40...."+error);
 						}	
 						subCateg[subCateg.length] = subCats;
-						/*req.session.categories = categ;*/
+						req.session.subcategories = subCateg;
 						res.json(subCateg);
 					});
 				}
@@ -139,6 +137,38 @@ app.post('/addSubCategory', function(req, res)
 					res.json({error : "Sub-Category already exists."});
 				}
 			});
+});
+
+app.get('/findSubCategoryById',function(req,res){
+	var subCatId = req.param('id');
+	SubCategory.findSubCategoryById(subCatId, function(error, cat) {
+		res.json(cat);
+	});
+});
+
+app.get('/deleteSubCategory',function(req,res){
+	var subCatId = req.param('id');
+	SubCategory.deleteSubCategory(subCatId, function(error, subCategory) {
+		for(var i=0; i<subCateg.length; i++){
+			if(subCateg[i]['subCategoryName'] == subCategory['subCategoryName']){
+				subCateg.splice(i,1);
+			}
+		}
+		req.session.subcategories = subCateg;
+		res.json(subCateg);
+	});
+});
+
+app.post('/updateSubCategoryById',function(req,res){
+	SubCategory.updateSubCategory(req.body, function(error, subcat) {
+		for(var i=0; i<subCateg.length; i++){
+			if(subCateg[i]['_id']+'' === subcat['_id']+''){
+				subCateg[i] = subcat;
+			}
+		}
+		req.session.subcategories = subCateg;
+		res.json(subCateg);
+	});
 });
 
 module.exports = app;

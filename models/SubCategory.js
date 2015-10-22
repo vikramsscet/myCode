@@ -18,7 +18,7 @@ subCategorySchema.statics.findSubCategory = function(subCat, done){
 	return SubCategories.findOne({ subCategoryName: subCat }, done);
 };
 
-subCategorySchema.statics.findCategoryById = function(id, done) {
+subCategorySchema.statics.findSubCategoryById = function(id, done) {
 	mongoose.model('SubCategories', subCategorySchema);
 	var SubCategories = conn.model('SubCategories');
 	return SubCategories.findOne({ _id: id }, done);
@@ -31,27 +31,28 @@ subCategorySchema.statics.addSubCategory = function(subCategoryDetail,done) {
 	return subCat.save(done);
 };
 
-/*categorySchema.statics.deleteCategory = function(catId, callback) {
-	mongoose.model('Categories', categorySchema);
-	var Categories = conn.model('Categories');
-	Categories.findOne({_id : catId}, function(err, cat){
+subCategorySchema.statics.deleteSubCategory = function(subCatId, callback) {
+	mongoose.model('SubCategories', subCategorySchema);
+	var SubCategories = conn.model('SubCategories');
+	SubCategories.findOne({_id : subCatId}, function(err, subCat){
 		if(err)
 			console.log("error :- "+err);
-		return cat.remove(callback);
+		return subCat.remove(callback);
 	});
 }
 
-categorySchema.statics.updateCategory = function(categoryDetail,done) {
-	mongoose.model('Categories', categorySchema);
-	var Categories = conn.model('Categories');
+subCategorySchema.statics.updateSubCategory = function(subCategoryDetail,done) {
+	mongoose.model('SubCategories', subCategorySchema);
+	var SubCategories = conn.model('SubCategories');
 	
-	Categories.findOne({_id : categoryDetail['catId']}, function(err, cat){
+	SubCategories.findOne({_id : subCategoryDetail['subCatId']}, function(err, subCat){
 		if(err)
 			console.log("error :- "+err);
-		cat.categoryName = categoryDetail['catName'];
-		return cat.save(done);
+		subCat.categoryName = subCategoryDetail['catName'];
+		subCat.subCategoryName = subCategoryDetail['subCatName'];
+		return subCat.save(done);
 	});
-};*/
+};
 
 var SubCategory = mongoose.model('SubCategories', subCategorySchema);
 
