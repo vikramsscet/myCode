@@ -8,6 +8,7 @@ var Category = {
 			this.editCategoryButtonClick();
 			this.closeCancleCategoryButtonClick();
 			this.editCategorySubmitClick();
+			this.editCategoryCloseCancleClick();
 			this.addSubCategoryButtonClick();
 			this.closeCancleSubCategoryButtonClick();
 			this.addSubCategorySubmitClick();
@@ -76,18 +77,11 @@ var Category = {
 		
 		editCategoryButtonClick : function(){
 			$("[id^='editCategory-']").click(function(element){
-				var categoryId = this.id.split('-')[1]; 
-				$.ajax({
-					url: "/findCategoryById",
-					type: "GET",
-					async: false,
-					dataType : "json",
-					data : {id : categoryId},
-					success: function(result){
-						$("#eu-edit-category").val(result.categoryName);
-						$("#editCategorySubmitButton").val(categoryId);
-					}
-				});
+				var categoryId = this.id.split('-')[1];
+				var catFun = Category.getCategoryById(categoryId);
+				var catObj = catFun();
+				$("#eu-edit-category").val(catObj.categoryName);
+				$("#editCategorySubmitButton").val(categoryId);
 				$("#editCategoryModalDialog").removeClass("fade").addClass("show");
 			});
 		},
@@ -130,9 +124,10 @@ var Category = {
 				var getCatListfun = Category.getCategoryList();
 				$("#selectCategory").empty();
 				var categoryList = getCatListfun();
+				console.log(categoryList);
 				$("#selectCategory").append("<option value=''>Select Category</option>");
 				for(var i=0; i< categoryList.length; i++){
-					$("#selectCategory").append("<option value='"+categoryList[i]['categoryName']+"'>"+categoryList[i]['categoryName']+"</option>");
+					$("#selectCategory").append("<option value='"+categoryList[i]['_id']+"'>"+categoryList[i]['categoryName']+"</option>");
 				}
 				$("#addSubCategoryDialog").removeClass("fade").addClass("show");
 			});
@@ -151,13 +146,29 @@ var Category = {
 				url: "/categoryList",
 				type: "GET",
 				async: false,
-				dataType : "json",
 				success: function(result){
 					categoryList = result;
 				}
 			});
 			return function(){
 				return categoryList;
+			}
+		},
+
+		getCategoryById : function(categoryId){
+			var catObj;
+			$.ajax({
+				url: "/findCategoryById",
+				type: "GET",
+				async: false,
+				dataType : "json",
+				data : {id : categoryId},
+				success: function(result){
+					catObj = result;
+				}
+			});
+			return function(){
+				return catObj;
 			}
 		},
 		
@@ -168,7 +179,8 @@ var Category = {
 				}
 				else{
 					var addSubCategoryData = {
-							category : $("#selectCategory").val(),
+							categoryId : $("#selectCategory").val(),
+							categoryName : $("#selectCategory :selected").text(),
 							subCategory : $("#eu-sub-category").val()
 							};
 					$.ajax({
@@ -215,7 +227,7 @@ var Category = {
 			var categoryList = getCatListfun();
 			$("#editSelectCategory").append("<option value=''>Select Category</option>");
 			for(var i=0; i< categoryList.length; i++){
-				$("#editSelectCategory").append("<option value='"+categoryList[i]['categoryName']+"'>"+categoryList[i]['categoryName']+"</option>");
+				$("#editSelectCategory").append("<option value='"+categoryList[i]['_id']+"'>"+categoryList[i]['categoryName']+"</option>");
 			}
 
 			var subCategoryId = this.id.split('-')[1];
@@ -226,7 +238,9 @@ var Category = {
 				dataType : "json",
 				data : {id : subCategoryId},
 				success: function(result){
-					$("#editSelectCategory option[value='"+result.categoryName+"']").prop('selected', true);
+					var catFun = Category.getCategoryById(result.categoryId);
+					var catObj = catFun();
+					$("#editSelectCategory option[value='"+catObj['_id']+"']").prop('selected', true);
 					$("#eu-edit-sub-category").val(result.subCategoryName);
 					$("#editSubCategorySubmitButton").val(subCategoryId);
 				}
@@ -244,13 +258,14 @@ var Category = {
 
 	editSubCategorySubmitClick : function(){
 		$("#editSubCategorySubmitButton").click(function(){
-			var catName = $("#editSelectCategory").val();
+			var catId = $("#editSelectCategory").val();
 			var subCatName = $("#eu-edit-sub-category").val();
-			if(subCatName == "" || subCatName == null || catName == "" || catName == null){
+			if(subCatName == "" || subCatName == null || catId == "" || catId == null){
 				$("#editCatWarning").show().html("Please enter Category & SubCateory to update.");
 			}else{
 				var subCatDetail = {
-					catName : catName,
+					catId : catId,
+					catName : $("#editSelectCategory :selected").text(),
 					subCatName : subCatName,
 					subCatId : $("#editSubCategorySubmitButton").val()
 				};

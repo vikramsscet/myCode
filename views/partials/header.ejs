@@ -13,7 +13,9 @@
 		</div>
 		<div class="collapse navbar-collapse" id="myNavbar">
 			<ul class="nav navbar-nav">
+				<%if(userName!=""){ %>
 		          <li><a href="/admin">Admin</a></li>
+				<%}%>
 					<% var cat = {}; %>
 					<% for(var i=0; i<cats.length; i++) { %>
 						<% var sclist = []; %>
@@ -38,13 +40,6 @@
 							<li><a href="/article?data=<%= index %>"> <%= index %> </a></li>
 						<% } %>
 					<% } %>
-		          <!-- <li><a href="#section3">Section 3</a></li>
-		          <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Section 4 <span class="caret"></span></a>
-		            <ul class="dropdown-menu">
-		              <li><a href="#section41">Section 4-1</a></li>
-		              <li><a href="#section42">Section 4-2</a></li>
-		            </ul>
-		          </li> -->
 		    </ul>
 		    <ul class="nav navbar-nav navbar-right">
 		    <%if(userName!=""){ %>

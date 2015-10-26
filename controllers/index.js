@@ -8,7 +8,17 @@ Category.findAllCategories(function(error, cats) {
 	categ = cats;
 });
 var subCateg;
+/*SubCategory.findAllSubCategories(function(error, subCats){
+	subCateg = subCats;
+});*/
 SubCategory.findAllSubCategories(function(error, subCats){
+	for(var subCatindex in subCats){
+		for(var catIndex in categ){
+			if(subCats[subCatindex]['categoryId'] == categ[catIndex]['_id']){
+				subCats[subCatindex].categoryName = categ[catIndex]['categoryName'];
+			}
+		}
+	}
 	subCateg = subCats;
 });
 app.get('/', function(req, res)
@@ -173,6 +183,9 @@ app.get('/deleteUser',function(req,res){
 
 app.get('/admin', function(req, res){
 	var uName = "";
+	if(req.session.loggedInUserName == null && req.session.loggedInUserName == undefined){
+		res.redirect("/");
+	}
 	if (req.session.loggedInUserName !== null && req.session.loggedInUserName !== undefined)
 	{
 		uName = req.session.loggedInUserName;

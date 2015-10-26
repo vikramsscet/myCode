@@ -8,9 +8,20 @@ var categ;
 Category.findAllCategories(function(error, cats) {
 	categ = cats;
 });
-var subCateg;
+var subCateg = [];
 SubCategory.findAllSubCategories(function(error, subCats){
-	subCateg = subCats;
+	for(var subCatindex in subCats){
+		for(var catIndex in categ){
+			if(subCats[subCatindex]['categoryId'] == categ[catIndex]['_id']){
+				var subCatObj = {categoryId : "",categoryName : "", _id : "", subCategoryName : ""};
+				subCatObj.categoryId = subCats[subCatindex]['categoryId'];
+				subCatObj.categoryName = categ[catIndex]['categoryName'];
+				subCatObj.subCategoryName = subCats[subCatindex]['subCategoryName'];
+				subCatObj._id = subCats[subCatindex]['_id'];
+				subCateg.push(subCatObj);
+			}
+		}
+	}
 });
 app.get('/category', function(req, res){
 	var uName = "";
@@ -88,6 +99,12 @@ app.post('/updateCategoryById',function(req,res){
 				categ[i] = cat;
 			}
 		}
+		for(var i = 0; i < subCateg.length; i++){
+			if(subCateg[i]['categoryId'].toString() == req.body['catId'].toString()){
+				subCateg[i]['categoryName'] = req.body['catName'];
+			}
+		}
+		req.session.subcategories = subCateg;
 		req.session.categories = categ;
 		res.json(categ);
 	});
@@ -119,16 +136,23 @@ app.get('/sub-category', function(req, res){
 app.post('/addSubCategory', function(req, res)
 		{
 			var subCatData = {
-				categoryName : req.body.category,
+				categoryId : req.body.categoryId,
 				subCategoryName : req.body.subCategory
 			};
+			var categoryName = req.body.categoryName;
 			SubCategory.findSubCategory(subCatData.subCategoryName, function(error, category){
 				if(category===null){
 					SubCategory.addSubCategory(subCatData,function(error, subCats) {
 						if(error){
 							console.log("40...."+error);
-						}	
-						subCateg[subCateg.length] = subCats;
+						}
+						var newSubCatObj = {categoryId : "", categoryName : "", subCategoryName : "", _id : ""}
+						newSubCatObj['categoryId'] = subCats['categoryId'];
+						newSubCatObj['categoryName'] = categoryName;
+						newSubCatObj['subCategoryName'] = subCats['subCategoryName'];
+						newSubCatObj['_id'] = subCats['_id'];
+
+						subCateg[subCateg.length] = newSubCatObj;
 						req.session.subcategories = subCateg;
 						res.json(subCateg);
 					});
@@ -161,9 +185,11 @@ app.get('/deleteSubCategory',function(req,res){
 
 app.post('/updateSubCategoryById',function(req,res){
 	SubCategory.updateSubCategory(req.body, function(error, subcat) {
-		for(var i=0; i<subCateg.length; i++){
-			if(subCateg[i]['_id']+'' === subcat['_id']+''){
-				subCateg[i] = subcat;
+		for(var subCatIndex in subCateg){
+			if(subcat['_id'].toString() == subCateg[subCatIndex]['_id'].toString()){
+				subCateg[subCatIndex]['categoryName'] = req.body['catName'];
+				subCateg[subCatIndex]['subCategoryName'] = subcat['subCategoryName'];
+				subCateg[subCatIndex]['categoryId'] = subcat['categoryId'];
 			}
 		}
 		req.session.subcategories = subCateg;

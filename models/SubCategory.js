@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var conn = mongoose.createConnection('mongodb://localhost:27017/assistDB');
 var Schema = mongoose.Schema;
 var subCategorySchema = new Schema({
-    categoryName: String,
+    categoryId: String,
     subCategoryName : String
 });
 
@@ -48,7 +48,7 @@ subCategorySchema.statics.updateSubCategory = function(subCategoryDetail,done) {
 	SubCategories.findOne({_id : subCategoryDetail['subCatId']}, function(err, subCat){
 		if(err)
 			console.log("error :- "+err);
-		subCat.categoryName = subCategoryDetail['catName'];
+		subCat.categoryId = subCategoryDetail['catId'];
 		subCat.subCategoryName = subCategoryDetail['subCatName'];
 		return subCat.save(done);
 	});
