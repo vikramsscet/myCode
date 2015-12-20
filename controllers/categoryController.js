@@ -1,40 +1,20 @@
 var express = require('express');
 var app = express.Router();
 
-//var User = require('../models/User');
 var Category = require('../models/Category');
 var SubCategory = require('../models/SubCategory');
+var Config = require('../models/Util');
 var categ;
-Category.findAllCategories(function(error, cats) {
-	categ = cats;
-});
 var subCateg = [];
-SubCategory.findAllSubCategories(function(error, subCats){
-	for(var subCatindex in subCats){
-		for(var catIndex in categ){
-			if(subCats[subCatindex]['categoryId'] == categ[catIndex]['_id']){
-				var subCatObj = {categoryId : "",categoryName : "", _id : "", subCategoryName : ""};
-				subCatObj.categoryId = subCats[subCatindex]['categoryId'];
-				subCatObj.categoryName = categ[catIndex]['categoryName'];
-				subCatObj.subCategoryName = subCats[subCatindex]['subCategoryName'];
-				subCatObj._id = subCats[subCatindex]['_id'];
-				subCateg.push(subCatObj);
-			}
-		}
-	}
-});
+
 app.get('/category', function(req, res){
 	var uName = "";
 	if (req.session.loggedInUserName !== null && req.session.loggedInUserName !== undefined)
 	{
 		uName = req.session.loggedInUserName;
 	}
-	if(req.session.categories == null || req.session.categories == undefined){
-		req.session.categories = categ;
-	}
-	if(req.session.subcategories == null || req.session.subcategories == undefined){
-		req.session.subcategories = subCateg;
-	}
+	categ = req.session.categories;
+	subCateg = req.session.subcategories
 	var cats = req.session.categories;
 	var subcats = req.session.subcategories;
 	res.render('category', {
@@ -47,7 +27,7 @@ app.get('/category', function(req, res){
 });
 
 app.get('/categoryList',function(req,res){
-	res.json(categ);
+	res.json(req.session.categories);
 });
 
 app.post('/addCategory', function(req, res, next)
@@ -81,6 +61,17 @@ app.get('/deleteCategory',function(req,res){
 			}
 		}
 		req.session.categories = categ;
+
+		SubCategory.deleteSubCategoryByCategoryId(catId, function(error, subCat){
+			for(var i = 0; i < subCateg.length; i++){
+				if(subCateg[i]['categoryId'].toString() == catId.toString()){
+					subCateg.splice(i,1);
+					i--;
+				}
+			}
+			req.session.subcategories = subCateg;
+		});
+
 		res.json(categ);
 	});
 });
@@ -116,14 +107,10 @@ app.get('/sub-category', function(req, res){
 	{
 		uName = req.session.loggedInUserName;
 	}
-	if(req.session.categories == null || req.session.categories == undefined){
-		req.session.categories = categ;
-	}
 	var cats = req.session.categories;
-	if(req.session.subcategories == null || req.session.subcategories == undefined){
-		req.session.subcategories = subCateg;
-	}
+	categ = req.session.categories;
 	var subcats = req.session.subcategories;
+	subCateg = req.session.subcategories;
 	res.render('subcategory', {
 		title : 'New Idea...',
 		userName : uName,

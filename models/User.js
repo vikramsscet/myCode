@@ -1,7 +1,6 @@
-var mongoose = require('mongoose');
-var conn = mongoose.createConnection('mongodb://localhost:27017/assistDB');
-var Schema = mongoose.Schema;
-var userSchema = new Schema({
+var Config = require('../models/Util');
+
+var userSchema = new Config.Schema({
     firstName: String,
     lastName : String,
     mobileNumber : String,
@@ -10,39 +9,39 @@ var userSchema = new Schema({
 });
 
 userSchema.statics.findUser = function(email, done) {
-	mongoose.model('Users', userSchema);
-	var Users = conn.model('Users');
+	//mongoose.model('Users', userSchema);
+	var Users = Config.conn.model('Users');
 	email = email.toLowerCase();
 	return Users.findOne({ email: email }, done);
 };
 
 userSchema.statics.findAllUsers = function(done) {
-	mongoose.model('Users', userSchema);
-	var Users = conn.model('Users');
+	//mongoose.model('Users', userSchema);
+	var Users = Config.conn.model('Users');
 	return Users.find({}, done);
 };
 
 userSchema.statics.findUserById = function(id, done) {
-	mongoose.model('Users', userSchema);
-	var Users = conn.model('Users');
+	//mongoose.model('Users', userSchema);
+	var Users = Config.conn.model('Users');
 	return Users.findOne({ _id: id }, done);
 };
 
 userSchema.statics.AddUser = function(userDetail,done) {
-	mongoose.model('Users', userSchema);
-	var Users = conn.model('Users');
+	//mongoose.model('Users', userSchema);
+	var Users = Config.conn.model('Users');
 	var u = new Users(userDetail)
 	return u.save(done);
 };
 
 userSchema.statics.updateUser = function(userDetail,done) {
-	mongoose.model('Users', userSchema);
-	var Users = conn.model('Users');
-	
+	//mongoose.model('Users', userSchema);
+	var Users = Config.conn.model('Users');
+
 	Users.findOne({_id : userDetail['userId']}, function(err, user){
 		if(err)
 			console.log("error :- "+err);
-		
+
 		user.firstName = userDetail['fName'];
 		user.lastName = userDetail['lName'];
 		user.email = userDetail['email'];
@@ -52,8 +51,8 @@ userSchema.statics.updateUser = function(userDetail,done) {
 };
 
 userSchema.statics.deleteUser = function(userId, callback) {
-	mongoose.model('Users', userSchema);
-	var Users = conn.model('Users');
+	//mongoose.model('Users', userSchema);
+	var Users = Config.conn.model('Users');
 	
 	Users.findOne({_id : userId}, function(err, user){
 		if(err)
@@ -63,6 +62,6 @@ userSchema.statics.deleteUser = function(userId, callback) {
 	});
 }
 
-var User = mongoose.model('User', userSchema);
+var User = Config.mongoose.model('Users', userSchema);
 
 module.exports = User;

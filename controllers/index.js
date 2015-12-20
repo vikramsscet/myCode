@@ -1,27 +1,37 @@
-var express = require('express');
-var app = express.Router();
+var Config = require('../models/Util');
+
 var User = require('../models/User');
 var Category = require('../models/Category');
 var SubCategory = require('../models/SubCategory');
 var categ;
-Category.findAllCategories(function(error, cats) {
-	categ = cats;
+
+Category.findAllCategories().exec().then(function(categories){
+	categ = categories;
+}).catch(function(err){
+	console.log("Error !!! : "+err)
 });
-var subCateg;
-/*SubCategory.findAllSubCategories(function(error, subCats){
-	subCateg = subCats;
-});*/
-SubCategory.findAllSubCategories(function(error, subCats){
+
+var subCateg=[];
+
+SubCategory.findAllSubCategories().exec().then(function(subCats){
 	for(var subCatindex in subCats){
 		for(var catIndex in categ){
 			if(subCats[subCatindex]['categoryId'] == categ[catIndex]['_id']){
-				subCats[subCatindex].categoryName = categ[catIndex]['categoryName'];
+				var subCatObj = {categoryId : "",categoryName : "", _id : "", subCategoryName : ""};
+				subCatObj.categoryId = subCats[subCatindex]['categoryId'];
+				subCatObj.categoryName = categ[catIndex]['categoryName'];
+				subCatObj.subCategoryName = subCats[subCatindex]['subCategoryName'];
+				subCatObj._id = subCats[subCatindex]['_id'];
+				subCateg.push(subCatObj);
 			}
 		}
 	}
-	subCateg = subCats;
+	Config.subCateg = subCateg;
+}).catch(function(err){
+	console.log("Error !!! : "+err)
 });
-app.get('/', function(req, res)
+
+Config.app.get('/', function(req, res)
 {
 	var uName = "";
 	if (req.session.loggedInUserName !== null && req.session.loggedInUserName !== undefined)
@@ -36,7 +46,6 @@ app.get('/', function(req, res)
 		req.session.subcategories = subCateg;
 	}
 	var subcats = req.session.subcategories;
-	console.log(subcats);
 	res.render('index', {
 		title : 'New Idea...',
 		userName : uName,
@@ -46,7 +55,7 @@ app.get('/', function(req, res)
 	});
 });
 
-app.post('/signUp', function(req, res)
+Config.app.post('/signUp', function(req, res)
 {
 	var regData = {
 		firstName : req.body.firstName,
@@ -59,31 +68,31 @@ app.post('/signUp', function(req, res)
 		req.session.categories = categ;
 	}
 	var cats = req.session.categories;
-	User.findUser(regData.email, function(error, user){
-		if(user===null){
-			User.AddUser(regData,function(error, users) {
-				if(error){
-					console.log("40...."+error);
-				}
-				req.session.loggedInUserName = regData['email'];
-				res.redirect("/");
-			});
+	var subcats = req.session.subcategories;
+	User.findUser(regData.email).exec().then(function(user){
+		if(user === null){
+			return User.AddUser(regData);
 		}
-		else{
-			res.render('index', {
-				title : 'New Idea...',
-				userName : "",
-				cats : cats,
-				error : {
-					errorType : "signup",
-					message : "Email already exists..."
-				}
-			});
-		}
+		else
+			throw "User already exists...";
+	}).then(function(users){
+		req.session.loggedInUserName = regData['email'];
+		res.redirect("/");
+	}).catch(function(err){
+		res.render('index', {
+			title : 'New Idea...',
+			userName : "",
+			cats : cats,
+			subcats : subcats,
+			error : {
+				errorType : "signup",
+				message : err
+			}
+		});
 	});
 });
 
-app.post('/signIn', function(req, res)
+Config.app.post('/signIn', function(req, res)
 {
 	var loginDetail = {
 		email : req.body.email,
@@ -97,16 +106,16 @@ app.post('/signIn', function(req, res)
 		req.session.subcategories = subCateg;
 	}
 	var subcats = req.session.subcategories;
-	User.findUser(loginDetail.email, function(error, user){
-		if(user === null){
+	User.findUser(loginDetail.email).exec().then(function(user){
+		if(user === null) {
 			res.render('index', {
-				title : 'New Idea...',
-				userName : "",
-				cats : cats,
-				subcats : subcats,
-				error : {
-					errorType : "login",
-					message : "Please enter valid login credentials."
+				title: 'New Idea...',
+				userName: "",
+				cats: cats,
+				subcats: subcats,
+				error: {
+					errorType: "login",
+					message: "Please enter valid login credentials."
 				}
 			});
 		}else{
@@ -126,16 +135,27 @@ app.post('/signIn', function(req, res)
 				res.redirect("/");
 			}
 		}
+	}).catch(function(err){
+		res.render('index', {
+			title : 'New Idea...',
+			userName : "",
+			cats : cats,
+			subcats : subcats,
+			error : {
+				errorType : "login",
+				message : "Something bad happened."
+			}
+		});
 	});
 });
 
-app.get('/signout', function(req, res)
+Config.app.get('/signout', function(req, res)
 {
 	req.session.loggedInUserName = "";
 	res.redirect("/");
 });
 
-app.get('/list', function(req, res){
+Config.app.get('/list', function(req, res){
 	var uName = "";
 	if (req.session.loggedInUserName !== null && req.session.loggedInUserName !== undefined)
 	{
@@ -149,7 +169,7 @@ app.get('/list', function(req, res){
 		req.session.subcategories = subCateg;
 	}
 	var subcats = req.session.subcategories;
-	User.findAllUsers(function(error, users) {
+	User.findAllUsers().exec().then(function(users) {
 		res.render('users', {
 			title : 'New Idea...',
 			userName : uName,
@@ -158,30 +178,39 @@ app.get('/list', function(req, res){
 			users : users,
 			error : ""
 		});
+	}).catch(function(err){
+		res.render('users', {
+			title : 'New Idea...',
+			userName : uName,
+			cats : cats,
+			subcats : subcats,
+			users : users,
+			error : err
+		});
 	});
 });
 
-app.get('/find',function(req,res){
+Config.app.get('/find',function(req,res){
 	var userId = req.param('id');
 	User.findUserById(userId, function(error, user) {
 		res.json(user);
 	});
 });
 
-app.post('/updateUser',function(req,res){
+Config.app.post('/updateUser',function(req,res){
 	User.updateUser(req.body, function(error, user) {
 		res.json(user);
 	});
 });
 
-app.get('/deleteUser',function(req,res){
+Config.app.get('/deleteUser',function(req,res){
 	var userId = req.param('id');
 	User.deleteUser(userId, function(error, user) {
 		res.json(user);
 	});
 });
 
-app.get('/admin', function(req, res){
+Config.app.get('/admin', function(req, res){
 	var uName = "";
 	if(req.session.loggedInUserName == null && req.session.loggedInUserName == undefined){
 		res.redirect("/");
@@ -207,4 +236,4 @@ app.get('/admin', function(req, res){
 	});
 });
 
-module.exports = app;
+module.exports = Config.app;

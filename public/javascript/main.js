@@ -2,12 +2,12 @@ $(document).ready(function()
 {
 	$("#signInCloseButton, #signInCancleButton").click(function(){
 		$("#Login").removeClass('show')
-		window.location="http://localhost:3000";
+		window.location=window.location.href;
 	});
 	
 	$("#signUpCloseButton, #signUpCancleButton").click(function(){
 		$("#Login").removeClass('show')
-		window.location="http://localhost:3000";
+		window.location=window.location.href;
 	});
 	
 	User.init();

@@ -60,17 +60,26 @@ var Category = {
 		},
 		
 		deleteCategoryButtonClick : function(){
+
 			$("[id^='deleteCategory-']").click(function(element){
-				var catId = this.id.split('-')[1];
-				$.ajax({
-					url: "/deleteCategory",
-					type: "GET",
-					async: false,
-					dataType : "json",
-					data : {id : catId},
-					success: function(result){
-						window.location = window.location.href;
-					}
+
+				var self = this;
+				$("#deleteCategoryWarningModalDialog").removeClass("fade").addClass("show");
+				$("#deleteCategoryWarningSubmitButton").click(function(){
+					var catId = self.id.split('-')[1];
+					$.ajax({
+						url: "/deleteCategory",
+						type: "GET",
+						async: false,
+						dataType : "json",
+						data : {id : catId},
+						success: function(result){
+							window.location = window.location.href;
+						}
+					});
+				});
+				$("#deleteCategoryWarningCancelButton, #deleteCategoryWarningCloseButton").click(function(){
+					$("#deleteCategoryWarningModalDialog").removeClass("show").addClass("fade");
 				});
 			});
 		},
