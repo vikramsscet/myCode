@@ -16,6 +16,7 @@
       <tr>
         <th>Category</th>
         <th>Edit/Delete Category</th>
+        <th>Save User Category</th>
       </tr>
     </thead>
     <tbody>
@@ -24,10 +25,11 @@
     			<td> <%= cats[i].categoryName %> </td>
         		<td> 
         			<div class="btn-group"> 
-        				<button type="button" id="editCategory-<%= cats[i]['_id'] %>" class="btn btn-primary">Edit</button> 
-        				<button type="button" id="deleteCategory-<%= cats[i]['_id'] %>" class="btn btn-primary">Delete</button> 
+        				<button type="button" id="editCategory-<%= cats[i]['_id'] %>" class="btn btn-primary">Edit</button>
+        				<button type="button" id="deleteCategory-<%= cats[i]['_id'] %>" class="btn btn-primary">Delete</button>
         			</div> 
         		</td>
+                <td><input type="checkbox" id="userCategorycheckbox-<%= cats[i]['_id'] %>-<%= userId %>" > </td>
     		</tr>
     	<% } %>
     </tbody>

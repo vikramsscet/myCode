@@ -16,6 +16,7 @@ var Category = {
 			this.editSubCategoryButtonClick();
 			this.editSubCategorySubmitClick();
 			this.editSubCategoryCloseCancleClick();
+			this.saveRemoveUsersCategory();
 		},
 		
 		addCategoryButtonClick : function(){
@@ -290,6 +291,32 @@ var Category = {
 					}
 				});
 			}
+		});
+	},
+
+	saveRemoveUsersCategory : function(){
+		$("[id^='userCategorycheckbox-']").change(function(element){
+			var userCatDetail = this.id.split('-');
+			var categoryId = userCatDetail[1];
+			var userId = userCatDetail[2];
+			var ischecked= $(this).is(':checked');
+			var url;
+			if(ischecked){
+				url = "/addUserCategory";
+			}else{
+				url = "/removeUserCategory";
+			}
+			$.ajax({
+				url: url,
+				type: "POST",
+				async: true,
+				dataType : "json",
+				data : {userId : userId, categoryId : categoryId},
+				success: function(result){
+
+				}
+			});
+			
 		});
 	}
 }

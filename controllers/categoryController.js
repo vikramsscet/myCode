@@ -1,9 +1,10 @@
-var express = require('express');
-var app = express.Router();
 
+var Config = require('../models/Util');
+var app = Config.app;
 var Category = require('../models/Category');
 var SubCategory = require('../models/SubCategory');
-var Config = require('../models/Util');
+var usersCategory = require('../models/usersCategory');
+
 var categ;
 var subCateg = [];
 
@@ -14,14 +15,14 @@ app.get('/category', function(req, res){
 		uName = req.session.loggedInUserName;
 	}
 	categ = req.session.categories;
-	subCateg = req.session.subcategories
-	var cats = req.session.categories;
-	var subcats = req.session.subcategories;
+	subCateg = req.session.subcategories;
+	var userId = req.session.loggedInUserId;
 	res.render('category', {
 		title : 'New Idea...',
 		userName : uName,
-		cats : cats,
-		subcats : subcats,
+		userId : userId,
+		cats : categ,
+		subcats : subCateg,
 		error : ""
 	});
 });
@@ -183,5 +184,38 @@ app.post('/updateSubCategoryById',function(req,res){
 		res.json(subCateg);
 	});
 });
+
+app.get('/article', function(req,res){
+	var uName = "";
+	if (req.session.loggedInUserName !== null && req.session.loggedInUserName !== undefined)
+	{
+		uName = req.session.loggedInUserName;
+	}
+	var body = {
+			cat : req.query.cat,
+			subCat : req.query.subCat
+		};
+	console.log(body);
+	var cats = req.session.categories;
+	var subcats = req.session.subcategories;
+	res.render('article', {
+		title : 'New Idea...',
+		userName : uName,
+		cats : cats,
+		subcats : subcats,
+		body : body,
+		error : ""
+	});
+});
+
+app.post('/addUserCategory', function(req, res) {
+	var data = usersCategory.addUserCategory(req.body);
+	res.json(data);
+});
+
+app.post('/removeUserCategory', function(req, res) {
+	var data = usersCategory.removeUserCategory(req.body);
+	res.json(data);
+})
 
 module.exports = app;

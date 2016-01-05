@@ -132,6 +132,7 @@ Config.app.post('/signIn', function(req, res)
 				});
 			}else{
 				req.session.loggedInUserName = loginDetail.email;
+				req.session.loggedInUserId = user._id;
 				res.redirect("/");
 			}
 		}

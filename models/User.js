@@ -9,33 +9,28 @@ var userSchema = new Config.Schema({
 });
 
 userSchema.statics.findUser = function(email, done) {
-	//mongoose.model('Users', userSchema);
 	var Users = Config.conn.model('Users');
 	email = email.toLowerCase();
 	return Users.findOne({ email: email }, done);
 };
 
 userSchema.statics.findAllUsers = function(done) {
-	//mongoose.model('Users', userSchema);
 	var Users = Config.conn.model('Users');
 	return Users.find({}, done);
 };
 
 userSchema.statics.findUserById = function(id, done) {
-	//mongoose.model('Users', userSchema);
 	var Users = Config.conn.model('Users');
 	return Users.findOne({ _id: id }, done);
 };
 
 userSchema.statics.AddUser = function(userDetail,done) {
-	//mongoose.model('Users', userSchema);
 	var Users = Config.conn.model('Users');
 	var u = new Users(userDetail)
 	return u.save(done);
 };
 
 userSchema.statics.updateUser = function(userDetail,done) {
-	//mongoose.model('Users', userSchema);
 	var Users = Config.conn.model('Users');
 
 	Users.findOne({_id : userDetail['userId']}, function(err, user){
@@ -51,7 +46,6 @@ userSchema.statics.updateUser = function(userDetail,done) {
 };
 
 userSchema.statics.deleteUser = function(userId, callback) {
-	//mongoose.model('Users', userSchema);
 	var Users = Config.conn.model('Users');
 	
 	Users.findOne({_id : userId}, function(err, user){

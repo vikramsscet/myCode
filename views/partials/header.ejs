@@ -29,15 +29,15 @@
 					<% } %>
 				    <% for(var index in cat){%>
 						<% if(cat[index].length > 0){%>
-							<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="/article?data=<%= index %>"> <%= index %> </a>
+							<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="/article?cat=<%= index %>"> <%= index %> </a>
 								<ul class="dropdown-menu">
 							<% for(var i = 0; i<cat[index].length; i++){%>
-									<li><a href="/article?data=<%= cat[index][i]%>"><%= cat[index][i] %></a></li>
+									<li><a href="/article?subCat=<%= cat[index][i]%>&cat=<%= index%>"><%= cat[index][i] %></a></li>
 							<%}%>
 								</ul>
 							</li>
 						<% } else {%>
-							<li><a href="/article?data=<%= index %>"> <%= index %> </a></li>
+							<li><a href="/article?cat=<%= index %>"> <%= index %> </a></li>
 						<% } %>
 					<% } %>
 		    </ul>
