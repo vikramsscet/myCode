@@ -14,3 +14,15 @@ a {
 #addSubCategory{
 	float: right;
 }
+
+@media (min-width: 768px){
+  .navbar {
+    min-height: 50px;
+  }
+}
+
+@media (max-width: 360px){
+  .navbar {
+    min-height: 50px;
+  }
+}

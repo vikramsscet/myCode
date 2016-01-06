@@ -16,14 +16,30 @@ app.get('/category', function(req, res){
 	}
 	categ = req.session.categories;
 	subCateg = req.session.subcategories;
+	console.log(categ);
 	var userId = req.session.loggedInUserId;
-	res.render('category', {
-		title : 'New Idea...',
-		userName : uName,
-		userId : userId,
-		cats : categ,
-		subcats : subCateg,
-		error : ""
+
+	var newProm = usersCategory.getUserCategory({userId : userId}).exec();
+	newProm.then(function(userCats){
+		res.render('category', {
+			title : 'New Idea...',
+			userName : uName,
+			userId : userId,
+			cats : categ,
+			subcats : subCateg,
+			userCategories : userCats,
+			error : ""
+		});
+	}).catch(function(err){
+		console.log("Error!!! "+err);
+		res.render('category', {
+			title : 'New Idea...',
+			userName : uName,
+			userId : userId,
+			cats : categ,
+			subcats : subCateg,
+			error : ""
+		});
 	});
 });
 

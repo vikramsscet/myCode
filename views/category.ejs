@@ -29,7 +29,14 @@
         				<button type="button" id="deleteCategory-<%= cats[i]['_id'] %>" class="btn btn-primary">Delete</button>
         			</div> 
         		</td>
-                <td><input type="checkbox" id="userCategorycheckbox-<%= cats[i]['_id'] %>-<%= userId %>" > </td>
+                <% var checkedStatus = "" %>
+                <% for(var j=0; j < userCategories.length; j++) {
+                    if(userCategories[j].categoryId == cats[i]._id) {
+                      checkedStatus = "checked";
+                    }
+                } %>
+
+                <td><input type="checkbox" id="userCategorycheckbox-<%= cats[i]['_id'] %>-<%= userId %>" <%= checkedStatus %> > </td>
     		</tr>
     	<% } %>
     </tbody>
