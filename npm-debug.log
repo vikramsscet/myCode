@@ -1,0 +1,70 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'install', '--save', 'multer' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.36
+4 verbose readDependencies using package.json deps
+5 verbose cache add [ 'multer@1.2.0', null ]
+6 verbose cache add name=undefined spec="multer@1.2.0" args=["multer@1.2.0",null]
+7 verbose parsed url { protocol: null,
+7 verbose parsed url   slashes: null,
+7 verbose parsed url   auth: null,
+7 verbose parsed url   host: null,
+7 verbose parsed url   port: null,
+7 verbose parsed url   hostname: null,
+7 verbose parsed url   hash: null,
+7 verbose parsed url   search: null,
+7 verbose parsed url   query: null,
+7 verbose parsed url   pathname: 'multer@1.2.0',
+7 verbose parsed url   path: 'multer@1.2.0',
+7 verbose parsed url   href: 'multer@1.2.0' }
+8 verbose cache add name="multer" spec="1.2.0" args=["multer","1.2.0"]
+9 verbose parsed url { protocol: null,
+9 verbose parsed url   slashes: null,
+9 verbose parsed url   auth: null,
+9 verbose parsed url   host: null,
+9 verbose parsed url   port: null,
+9 verbose parsed url   hostname: null,
+9 verbose parsed url   hash: null,
+9 verbose parsed url   search: null,
+9 verbose parsed url   query: null,
+9 verbose parsed url   pathname: '1.2.0',
+9 verbose parsed url   path: '1.2.0',
+9 verbose parsed url   href: '1.2.0' }
+10 verbose addNamed [ 'multer', '1.2.0' ]
+11 verbose addNamed [ '1.2.0', '1.2.0' ]
+12 silly lockFile ad093c49-multer-1-2-0 multer@1.2.0
+13 verbose lock multer@1.2.0 /Users/raov/.npm/ad093c49-multer-1-2-0.lock
+14 verbose request where is /artifactory/api/npm/npm-repo/multer
+15 verbose request registry http://artifactory.cobalt.com/
+16 verbose request id 94769f870d07475a
+17 verbose url raw /artifactory/api/npm/npm-repo/multer
+18 verbose url resolving [ 'http://artifactory.cobalt.com/',
+18 verbose url resolving   './artifactory/api/npm/npm-repo/multer' ]
+19 verbose url resolved http://artifactory.cobalt.com/artifactory/api/npm/npm-repo/multer
+20 verbose request where is http://artifactory.cobalt.com/artifactory/api/npm/npm-repo/multer
+21 info trying registry request attempt 1 at 01:03:41
+22 http GET http://artifactory.cobalt.com/artifactory/api/npm/npm-repo/multer
+23 info retry will retry, error on last attempt: Error: connect ETIMEDOUT
+24 info trying registry request attempt 2 at 01:05:06
+25 http GET http://artifactory.cobalt.com/artifactory/api/npm/npm-repo/multer
+26 info retry will retry, error on last attempt: Error: connect ETIMEDOUT
+27 info trying registry request attempt 3 at 01:07:21
+28 http GET http://artifactory.cobalt.com/artifactory/api/npm/npm-repo/multer
+29 silly lockFile ad093c49-multer-1-2-0 multer@1.2.0
+30 silly lockFile ad093c49-multer-1-2-0 multer@1.2.0
+31 error network connect ETIMEDOUT
+31 error network This is most likely not a problem with npm itself
+31 error network and is related to network connectivity.
+31 error network In most cases you are behind a proxy or have bad network settings.
+31 error network
+31 error network If you are behind a proxy, please make sure that the
+31 error network 'proxy' config is set properly.  See: 'npm help config'
+32 error System Darwin 15.6.0
+33 error command "node" "/usr/local/bin/npm" "install" "--save" "multer"
+34 error cwd /Users/raov/myCode
+35 error node -v v0.10.36
+36 error npm -v 1.4.28
+37 error syscall connect
+38 error code ETIMEDOUT
+39 error errno ETIMEDOUT
+40 verbose exit [ 1, true ]

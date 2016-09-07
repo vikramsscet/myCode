@@ -15,7 +15,7 @@ a {
 	float: right;
 }
 
-@media (min-width: 768px){
+/*@media (min-width: 768px){
   .navbar {
     min-height: 50px;
   }
@@ -25,4 +25,4 @@ a {
   .navbar {
     min-height: 50px;
   }
-}
+}*/

@@ -1,56 +1,16 @@
 var Config = require('../models/Util');
 
 var User = require('../models/User');
-var Category = require('../models/Category');
-var SubCategory = require('../models/SubCategory');
-var categ;
-
-Category.findAllCategories().exec().then(function(categories){
-	categ = categories;
-}).catch(function(err){
-	console.log("Error !!! : "+err)
-});
-
-var subCateg=[];
-
-SubCategory.findAllSubCategories().exec().then(function(subCats){
-	for(var subCatindex in subCats){
-		for(var catIndex in categ){
-			if(subCats[subCatindex]['categoryId'] == categ[catIndex]['_id']){
-				var subCatObj = {categoryId : "",categoryName : "", _id : "", subCategoryName : ""};
-				subCatObj.categoryId = subCats[subCatindex]['categoryId'];
-				subCatObj.categoryName = categ[catIndex]['categoryName'];
-				subCatObj.subCategoryName = subCats[subCatindex]['subCategoryName'];
-				subCatObj._id = subCats[subCatindex]['_id'];
-				subCateg.push(subCatObj);
-			}
-		}
-	}
-	Config.subCateg = subCateg;
-}).catch(function(err){
-	console.log("Error !!! : "+err)
-});
+var utility = require('../models/Utility');
 
 Config.app.get('/', function(req, res)
 {
-	var uName = "";
-	if (req.session.loggedInUserName !== null && req.session.loggedInUserName !== undefined)
-	{
-		uName = req.session.loggedInUserName;
-	}
-	if(req.session.categories == null || req.session.categories == undefined){
-		req.session.categories = categ;
-	}
-	var cats = req.session.categories;
-	if(req.session.subcategories == null || req.session.subcategories == undefined){
-		req.session.subcategories = subCateg;
-	}
-	var subcats = req.session.subcategories;
+	var authObj = utility.getAuthentication(req, res);
 	res.render('index', {
 		title : 'New Idea...',
-		userName : uName,
-		cats : cats,
-		subcats : subcats,
+		userName : authObj.userName,
+		cats : authObj.cats,
+		subcats : authObj.subcats,
 		error : ""
 	});
 });
@@ -157,25 +117,13 @@ Config.app.get('/signout', function(req, res)
 });
 
 Config.app.get('/list', function(req, res){
-	var uName = "";
-	if (req.session.loggedInUserName !== null && req.session.loggedInUserName !== undefined)
-	{
-		uName = req.session.loggedInUserName;
-	}
-	if(req.session.categories == null || req.session.categories == undefined){
-		req.session.categories = categ;
-	}
-	var cats = req.session.categories;
-	if(req.session.subcategories == null || req.session.subcategories == undefined){
-		req.session.subcategories = subCateg;
-	}
-	var subcats = req.session.subcategories;
+	var authObj = utility.getAuthentication(req, res);
 	User.findAllUsers().exec().then(function(users) {
 		res.render('users', {
 			title : 'New Idea...',
-			userName : uName,
-			cats : cats,
-			subcats : subcats,
+			userName : authObj.userName,
+			cats : authObj.cats,
+			subcats : authObj.subcats,
 			users : users,
 			error : ""
 		});
@@ -212,28 +160,42 @@ Config.app.get('/deleteUser',function(req,res){
 });
 
 Config.app.get('/admin', function(req, res){
-	var uName = "";
-	if(req.session.loggedInUserName == null && req.session.loggedInUserName == undefined){
-		res.redirect("/");
-	}
-	if (req.session.loggedInUserName !== null && req.session.loggedInUserName !== undefined)
-	{
-		uName = req.session.loggedInUserName;
-	}
-	if(req.session.categories == null || req.session.categories == undefined){
-		req.session.categories = categ;
-	}
-	var cats = req.session.categories;
-	if(req.session.subcategories == null || req.session.subcategories == undefined){
-		req.session.subcategories = subCateg;
-	}
-	var subcats = req.session.subcategories;
+	var authObj = utility.getAuthentication(req, res);
 	res.render('admin', {
 		title : 'New Idea...',
-		cats : cats,
-		subcats : subcats,
-		userName : uName,
+		cats : authObj.cats,
+		subcats : authObj.subcats,
+		userName : authObj.userName,
 		error : ""
+	});
+});
+
+Config.app.get('/testPage', function(req, res){
+	res.render('testPage', {
+		title : 'Test Page...',
+		error : ""
+	});
+});
+
+Config.app.get('/logoUpdate', function(req, res){
+	var fileList = utility.showFiles();
+	var authObj = utility.getAuthentication(req, res);
+	res.render('logoUpdate', {
+		title : 'Test Page...',
+		cats : authObj.cats,
+		subcats : authObj.subcats,
+		userName : authObj.userName,
+		error : "",
+		fileList : fileList
+	});
+});
+
+Config.app.post('/api/photo',function(req,res){
+	utility.upload(req,res,function(err) {
+		if(err) {
+			return res.end(err);
+		}
+		res.end("File is uploaded");
 	});
 });
 

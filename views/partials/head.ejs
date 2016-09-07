@@ -1,5 +1,10 @@
 <meta charset="UTF-8">
-<title><%= title %></title>
+<title><% if(title){ %>
+    title
+  <% } else{%>
+    "Site....."
+    <% } %>
+</title>
 
 <!-- CSS -->
 <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">

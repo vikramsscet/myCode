@@ -4,29 +4,22 @@ var app = Config.app;
 var Category = require('../models/Category');
 var SubCategory = require('../models/SubCategory');
 var usersCategory = require('../models/usersCategory');
-
+var utility = require('../models/Utility');
 var categ;
 var subCateg = [];
 
 app.get('/category', function(req, res){
-	var uName = "";
-	if (req.session.loggedInUserName !== null && req.session.loggedInUserName !== undefined)
-	{
-		uName = req.session.loggedInUserName;
-	}
-	categ = req.session.categories;
-	subCateg = req.session.subcategories;
-	console.log(categ);
+	var authObj = utility.getAuthentication(req, res);
 	var userId = req.session.loggedInUserId;
 
 	var newProm = usersCategory.getUserCategory({userId : userId}).exec();
 	newProm.then(function(userCats){
 		res.render('category', {
 			title : 'New Idea...',
-			userName : uName,
+			userName : authObj.userName,
 			userId : userId,
-			cats : categ,
-			subcats : subCateg,
+			cats : authObj.cats,
+			subcats : authObj.subcats,
 			userCategories : userCats,
 			error : ""
 		});
