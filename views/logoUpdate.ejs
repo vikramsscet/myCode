@@ -19,22 +19,18 @@
             <td><input id="fileUploadSubmit" type="submit" value="Upload Image" name="submit" disabled="disabled"></td>
         </tr>
     </table>
-    <!--<input type="file" name="userPhoto" onchange="fileSelect()" />-->
-    <!--<input id="fileUploadSubmit" type="submit" value="Upload Image" name="submit" disabled="disabled">-->
     <span id = "status"></span>
 </form>
 
 <table class="table table-hover table-striped table-bordered">
     <thead>
     <tr>
-        <!--<th>Select</th>-->
         <th>Image Name</th>
         <th>Thumbnail</th>
     </tr>
     </thead>
     <% for(var i=0; i<fileList.length; i++) {%>
     <tr>
-        <!--<td><input type="checkbox" id="logoId-<%= fileList[i] %>"></td>-->
         <td><%= fileList[i] %></td>
         <td><img src="<%= fileList[i] %>" height="50" width="50"></td>
     </tr>

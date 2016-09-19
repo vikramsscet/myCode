@@ -7,9 +7,11 @@ var multer  =   require('multer');
 var mkdirp = require('mkdirp');
 var Category = require('../models/Category');
 var SubCategory = require('../models/SubCategory');
+var User = require('../models/User');
+var Promise = require('bluebird');
 
 var utilityObject = function(){
-    var categ, subCateg=[], bannerDirectory = "./tmp/foo/bar/baz";
+    var categ, subCateg=[], bannerDirectory = "./tmp/foo/bar/baz", title = "New Site";
     var createDirectory = function(){
         mkdirp('./tmp/foo/bar/baz', function (err) {
             if (err) console.error(err)
@@ -45,13 +47,13 @@ var utilityObject = function(){
         return files;
     }
 
-    var fileExistanceFlag = function(fileName){
+    /*var fileExistanceFlag = function(fileName){
         var files = this.showFiles();
         if(files.indexOf(fileName) == -1)
             return true;
         else
             return false;
-    }
+    }*/
 
     this.getAuthentication = function(req, res){
         var uName = "";
@@ -100,7 +102,50 @@ var utilityObject = function(){
             console.log("Error !!! : "+err)
         });
     }
+    this.getPageRenderParameter = function(){
+        var expectedParams = ['fileList'];
+        var bannerFiles = this.showFiles();
+        var returnedObj = arguments[0];
+        returnedObj['bannerLogo'] = bannerFiles[0];
+        returnedObj['title'] = title;
+        returnedObj['fileList'] = bannerFiles;
+        /*var promise;
+        for(i = 0; i< arguments.length; i++){
+            var argument = arguments[i];
+
+            switch (argument){
+                case 'fileList' :
+                    returnedObj['fileList'] = bannerFiles;
+                    returnedObj['error'] = "";
+                    break;
+                case 'users' :
+                    promise = new Promise(function(resolve, reject){
+                        User.findAllUsers().exec().then(function(users) {
+                            resolve(users);
+                        });
+                    });
+                    promise.then(function(usersList){
+                        returnedObj['users'] = usersList;
+                        returnedObj['error'] = "";
+
+                    });
+                    break;
+            }
+        }*/
+        if(!returnedObj['error']){
+            returnedObj['error'] = '';
+        }
+        return returnedObj;
+    }
+    //To set category & subcategory. Do bot remove it...
     this.setCategoryAndSubCategory();
+    this.findAllUsers = function(){
+        User.findAllUsers().exec().then(function(users) {
+            return {'users' :users, 'error' : ""};
+        }).catch(function(err){
+            return {'users' :[], 'error' : err};
+        });
+    }
 
 }
 

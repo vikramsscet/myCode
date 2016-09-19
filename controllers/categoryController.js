@@ -11,28 +11,17 @@ var subCateg = [];
 app.get('/category', function(req, res){
 	var authObj = utility.getAuthentication(req, res);
 	var userId = req.session.loggedInUserId;
-
+	var pageParams = utility.getPageRenderParameter(authObj);
+	pageParams['userId'] = userId;
 	var newProm = usersCategory.getUserCategory({userId : userId}).exec();
 	newProm.then(function(userCats){
-		res.render('category', {
-			title : 'New Idea...',
-			userName : authObj.userName,
-			userId : userId,
-			cats : authObj.cats,
-			subcats : authObj.subcats,
-			userCategories : userCats,
-			error : ""
-		});
+
+		pageParams['userCategories'] = userCats;
+		res.render('category', pageParams);
 	}).catch(function(err){
 		console.log("Error!!! "+err);
-		res.render('category', {
-			title : 'New Idea...',
-			userName : uName,
-			userId : userId,
-			cats : categ,
-			subcats : subCateg,
-			error : ""
-		});
+		pageParams['error'] = err;
+		res.render('category', pageParams);
 	});
 });
 
@@ -112,7 +101,7 @@ app.post('/updateCategoryById',function(req,res){
 });
 
 app.get('/sub-category', function(req, res){
-	var uName = "";
+	/*var uName = "";
 	if (req.session.loggedInUserName !== null && req.session.loggedInUserName !== undefined)
 	{
 		uName = req.session.loggedInUserName;
@@ -120,14 +109,10 @@ app.get('/sub-category', function(req, res){
 	var cats = req.session.categories;
 	categ = req.session.categories;
 	var subcats = req.session.subcategories;
-	subCateg = req.session.subcategories;
-	res.render('subcategory', {
-		title : 'New Idea...',
-		userName : uName,
-		cats : cats,
-		subcats : subcats,
-		error : ""
-	});
+	subCateg = req.session.subcategories;*/
+	var authObj = utility.getAuthentication(req, res);
+	var pageParams = utility.getPageRenderParameter(authObj);
+	res.render('subcategory', pageParams);
 });
 
 app.post('/addSubCategory', function(req, res)

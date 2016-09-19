@@ -1,18 +1,14 @@
 var Config = require('../models/Util');
 
 var User = require('../models/User');
+var Promise = require('bluebird');
 var utility = require('../models/Utility');
 
 Config.app.get('/', function(req, res)
 {
 	var authObj = utility.getAuthentication(req, res);
-	res.render('index', {
-		title : 'New Idea...',
-		userName : authObj.userName,
-		cats : authObj.cats,
-		subcats : authObj.subcats,
-		error : ""
-	});
+	var pageParams = utility.getPageRenderParameter(authObj);
+	res.render('index', pageParams);
 });
 
 Config.app.post('/signUp', function(req, res)
@@ -118,24 +114,15 @@ Config.app.get('/signout', function(req, res)
 
 Config.app.get('/list', function(req, res){
 	var authObj = utility.getAuthentication(req, res);
+	var pageParams = utility.getPageRenderParameter(authObj);
+	
 	User.findAllUsers().exec().then(function(users) {
-		res.render('users', {
-			title : 'New Idea...',
-			userName : authObj.userName,
-			cats : authObj.cats,
-			subcats : authObj.subcats,
-			users : users,
-			error : ""
-		});
+		pageParams['users'] = users;
+		res.render('users', pageParams);
 	}).catch(function(err){
-		res.render('users', {
-			title : 'New Idea...',
-			userName : uName,
-			cats : cats,
-			subcats : subcats,
-			users : users,
-			error : err
-		});
+		pageParams['error'] = err;
+		pageParams['users'] = [];
+		res.render('users', pageParams);
 	});
 });
 
@@ -161,13 +148,8 @@ Config.app.get('/deleteUser',function(req,res){
 
 Config.app.get('/admin', function(req, res){
 	var authObj = utility.getAuthentication(req, res);
-	res.render('admin', {
-		title : 'New Idea...',
-		cats : authObj.cats,
-		subcats : authObj.subcats,
-		userName : authObj.userName,
-		error : ""
-	});
+	var pageParams = utility.getPageRenderParameter(authObj);
+	res.render('admin', pageParams);
 });
 
 Config.app.get('/testPage', function(req, res){
@@ -178,16 +160,11 @@ Config.app.get('/testPage', function(req, res){
 });
 
 Config.app.get('/logoUpdate', function(req, res){
-	var fileList = utility.showFiles();
+	// var fileList = utility.showFiles();
 	var authObj = utility.getAuthentication(req, res);
-	res.render('logoUpdate', {
-		title : 'Test Page...',
-		cats : authObj.cats,
-		subcats : authObj.subcats,
-		userName : authObj.userName,
-		error : "",
-		fileList : fileList
-	});
+	var pageParams = utility.getPageRenderParameter(authObj);
+	console.log(pageParams);
+	res.render('logoUpdate', pageParams);
 });
 
 Config.app.post('/api/photo',function(req,res){
