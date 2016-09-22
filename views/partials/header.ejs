@@ -1,64 +1,155 @@
-<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-	<div class="container-fluid">
 
+<div id="navbar">
+	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
 		<div class="navbar-header">
-			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-          		<span class="icon-bar"></span>
-          		<span class="icon-bar"></span>
-          		<span class="icon-bar"></span>                        
-      		</button>
-      		<a class="navbar-brand" href="/">
-      		<img src="/<%= bannerLogo%>" width="100" height="30">
-      		</a>
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-1">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<!--<a class="navbar-brand" href="#">Brand</a>-->
+			<a class="navbar-brand" href="/">
+				<img src="/<%= bannerLogo%>" width="100" height="30">
+			</a>
 		</div>
-		<div class="collapse navbar-collapse" id="myNavbar">
+
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
 			<ul class="nav navbar-nav">
 				<%if(userName!=""){ %>
-		          <li><a href="/admin">Admin</a></li>
+				<li><a href="/admin">Admin</a></li>
 				<%}%>
-					<% var cat = {}; %>
-					<% for(var i=0; i<cats.length; i++) { %>
-						<% var sclist = []; %>
-						<% for(var subCatIterator = 0; subCatIterator < subcats.length; subCatIterator++){%>
-							<% if(cats[i].categoryName == subcats[subCatIterator].categoryName){
-								sclist.push(subcats[subCatIterator].subCategoryName);
-							} %>
-						<% }
-							cat[cats[i].categoryName] = sclist;
-						%>
-					<% } %>
-				    <% for(var index in cat){%>
-						<% if(cat[index].length > 0){%>
-							<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="/article?cat=<%= index %>"> <%= index %> </a>
-								<ul class="dropdown-menu">
-							<% for(var i = 0; i<cat[index].length; i++){%>
-									<li><a href="/article?subCat=<%= cat[index][i]%>&cat=<%= index%>"><%= cat[index][i] %></a></li>
-							<%}%>
-								</ul>
-							</li>
-						<% } else {%>
-							<li><a href="/article?cat=<%= index %>"> <%= index %> </a></li>
-						<% } %>
-					<% } %>
-		    </ul>
-		    <ul class="nav navbar-nav navbar-right">
-		    <%if(userName!=""){ %>
-		    	<li><a href="#"> Hello <%= userName %> </a></li>
-		    	<li><a href="/signout"><span class="glyphicon glyphicon-off"></span> Sign out</a></li>
-		    <% } else{ %>
-	        	<li><a data-toggle="modal" data-target="#signUp" href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-	        	<li>
-	        		<a data-toggle="modal" data-target="#Login" href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a>
-	        	</li>
-	        <% } %>
-	      </ul>
-		</div>
-		
-	</div>
-</nav>
+				<% var cat = {}; %>
+				<% for(var i=0; i<cats.length; i++) { %>
+				<% var sclist = []; %>
+				<% for(var subCatIterator = 0; subCatIterator < subcats.length; subCatIterator++){%>
+				<% if(cats[i].categoryName == subcats[subCatIterator].categoryName){
+					sclist.push(subcats[subCatIterator].subCategoryName);
+				} %>
+				<% }
+					cat[cats[i].categoryName] = sclist;
+				%>
+				<% } %>
 
-<%if(error!=""){ 
-	if(error.errorType == "login"){	
+
+
+				<% for(var index in cat){%>
+				<% if(cat[index].length > 0){%>
+				<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="/article?cat=<%= index %>"> <%= index %> <b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<% for(var i = 0; i<cat[index].length; i++){%>
+						<li><a href="/article?subCat=<%= cat[index][i]%>&cat=<%= index%>"><%= cat[index][i] %></a></li>
+						<%}%>
+					</ul>
+				</li>
+				<% } else {%>
+				<li><a href="/article?cat=<%= index %>"> <%= index %> </a></li>
+				<% } %>
+				<% } %>
+
+
+
+
+
+				<!--<li class="active"><a href="#">Active Link</a></li>
+				<li><a href="#">Link</a></li>-->
+
+				<!--<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+
+					<ul class="dropdown-menu">
+						<li class="kopie"><a href="#">Dropdown</a></li>
+						<li><a href="#">Dropdown Link 1</a></li>
+						<li class="active"><a href="#">Dropdown Link 2</a></li>
+						<li><a href="#">Dropdown Link 3</a></li>
+
+						<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown Link 4</a>
+							<ul class="dropdown-menu">
+								<li class="kopie"><a href="#">Dropdown Link 4</a></li>
+								<li><a href="#">Dropdown Submenu Link 4.1</a></li>
+								<li><a href="#">Dropdown Submenu Link 4.2</a></li>
+								<li><a href="#">Dropdown Submenu Link 4.3</a></li>
+								<li><a href="#">Dropdown Submenu Link 4.4</a></li>
+
+							</ul>
+						</li>
+
+						<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown Link 5</a>
+							<ul class="dropdown-menu">
+								<li class="kopie"><a href="#">Dropdown Link 5</a></li>
+								<li><a href="#">Dropdown Submenu Link 5.1</a></li>
+								<li><a href="#">Dropdown Submenu Link 5.2</a></li>
+								<li><a href="#">Dropdown Submenu Link 5.3</a></li>
+
+								<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown Submenu Link 5.4</a>
+									<ul class="dropdown-menu">
+										<li class="kopie"><a href="#">Dropdown Submenu Link 5.4</a></li>
+										<li><a href="#">Dropdown Submenu Link 5.4.1</a></li>
+										<li><a href="#">Dropdown Submenu Link 5.4.2</a></li>
+
+
+									</ul>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</li>-->
+				<!--<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown2 <b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<li class="kopie"><a href="#">Dropdown2</a></li>
+						<li><a href="#">Dropdown2 Link 1</a></li>
+						<li><a href="#">Dropdown2 Link 2</a></li>
+						<li><a href="#">Dropdown2 Link 3</a></li>
+
+						<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown2 Link 4</a>
+							<ul class="dropdown-menu">
+								<li class="kopie"><a href="#">Dropdown2 Link 4</a></li>
+								<li><a href="#">Dropdown2 Submenu Link 4.1</a></li>
+								<li><a href="#">Dropdown2 Submenu Link 4.2</a></li>
+								<li><a href="#">Dropdown2 Submenu Link 4.3</a></li>
+								<li><a href="#">Dropdown2 Submenu Link 4.4</a></li>
+
+							</ul>
+						</li>
+						<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown2 Link 5</a>
+							<ul class="dropdown-menu">
+								<li class="kopie"><a href="#">Dropdown Link 5</a></li>
+								<li><a href="#">Dropdown2 Submenu Link 5.1</a></li>
+								<li><a href="#">Dropdown2 Submenu Link 5.2</a></li>
+								<li><a href="#">Dropdown2 Submenu Link 5.3</a></li>
+								<li class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown Submenu Link 5.4</a>
+									<ul class="dropdown-menu">
+										<li class="kopie"><a href="#">Dropdown2 Submenu Link 5.4</a></li>
+										<li><a href="#">Dropdown2 Submenu Link 5.4.1</a></li>
+										<li><a href="#">Dropdown2 Submenu Link 5.4.2</a></li>
+
+									</ul>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</li>-->
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<%if(userName!=""){ %>
+				<li><a href="#"> Hello <%= userName %> </a></li>
+				<li><a href="/signout"><span class="glyphicon glyphicon-off"></span> Sign out</a></li>
+				<% } else{ %>
+				<li><a data-toggle="modal" data-target="#signUp" href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+				<li>
+					<a data-toggle="modal" data-target="#Login" href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a>
+				</li>
+				<% } %>
+			</ul>
+		</div><!-- /.navbar-collapse -->
+	</nav>
+</div>
+
+
+
+
+<%if(error!=""){
+	if(error.errorType == "login"){
 %>
 	<div id="Login" class="modal show" role="dialog">
 <%
@@ -67,7 +158,7 @@
 	<div id="Login" class="modal fade" role="dialog">
 <%
 	}
-}else{	
+}else{
 %>
 	<div id="Login" class="modal fade" role="dialog">
 <% } %>
@@ -78,7 +169,7 @@
 		      <button id="signInCloseButton" type="button" class="close" data-dismiss="modal">&times;</button>
 		      <h4 class="modal-title">Login</h4>
 		      <%if(error!="" && error.errorType == "login"){
-		      %>  
+		      %>
 		      		<p><%= error.message%></p>
 		      <% } %>
 		    </div>
@@ -92,7 +183,7 @@
 				      <label for="pwd">Password:</label>
 				      <input type="password" class="form-control" id="pwd" name="pwd" placeholder="Enter password">
 				    </div>
-				    
+
 				    <div class="form-group">
 					    <button id="signInSubmitButton" type="submit" class="btn btn-primary">Login</button>
 	                    <button id="signInCancleButton" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -106,7 +197,7 @@
 </div>
 
 
-<% if(error!="" && error.errorType == "signup"){ %> 
+<% if(error!="" && error.errorType == "signup"){ %>
 
 	<div id="signUp" class="modal show" role="dialog">
 <%	}else{ %>
@@ -118,7 +209,7 @@
 		<div class="modal-header">
 	      <button id="signUpCloseButton" type="button" class="close" data-dismiss="modal">&times;</button>
 	      <h4 class="modal-title">Sign Up</h4>
-	      <%if(error!="" && error.errorType == "signup"){ %>  
+	      <%if(error!="" && error.errorType == "signup"){ %>
 		      		<p><%= error.message%></p>
 		  <% } %>
 	    </div>
@@ -127,15 +218,15 @@
 			    <div class="form-group">
 			      <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter First Name">
 			    </div>
-			    
+
 			    <div class="form-group">
 			      <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Enter Last Name">
 			    </div>
-			    
+
 			    <div class="form-group">
 			      <input type="text" class="form-control" id="mobileNumber" name="mobileNumber" placeholder="Enter Mobile Number">
 			    </div>
-			    
+
 	    		<div class="form-group">
 			      <input type="email" class="form-control" id="newemail" name="newemail" placeholder="Enter email address">
 			    </div>
@@ -146,7 +237,7 @@
 			    	<button id="signUpSubmitButton" type="submit" class="btn btn-primary">Login</button>
 			    	<button id="signUpCancleButton" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
             </div>
-			</form>    
+			</form>
 	    </div>
 	 </div>
 </div>
