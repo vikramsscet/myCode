@@ -180,26 +180,15 @@ app.post('/updateSubCategoryById',function(req,res){
 });
 
 app.get('/article', function(req,res){
-	var uName = "";
-	if (req.session.loggedInUserName !== null && req.session.loggedInUserName !== undefined)
-	{
-		uName = req.session.loggedInUserName;
-	}
 	var body = {
 			cat : req.query.cat,
 			subCat : req.query.subCat
 		};
-	console.log(body);
-	var cats = req.session.categories;
-	var subcats = req.session.subcategories;
-	res.render('article', {
-		title : 'New Idea...',
-		userName : uName,
-		cats : cats,
-		subcats : subcats,
-		body : body,
-		error : ""
-	});
+	var authObj = utility.getAuthentication(req, res);
+	var pageParams = utility.getPageRenderParameter(authObj);
+	pageParams['body'] = body;
+
+	res.render('article', pageParams);
 });
 
 app.post('/addUserCategory', function(req, res) {

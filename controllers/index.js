@@ -176,4 +176,10 @@ Config.app.post('/api/photo',function(req,res){
 	});
 });
 
+Config.app.get('/addData', function(req, res){
+	var authObj = utility.getAuthentication(req, res);
+	var pageParams = utility.getPageRenderParameter(authObj);
+	res.render('addData', pageParams);
+});
+
 module.exports = Config.app;
